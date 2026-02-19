@@ -1,0 +1,51 @@
+name: 🚀 Enterprise Core Update
+
+on:
+  schedule:
+    - cron: '0 */4 * * *' # Запуск каждые 4 часа
+  workflow_dispatch:      # Ручной запуск кнопкой
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Разрешаем боту пушить изменения
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: 🛠 Install Sing-box (Kernel)
+        run: |
+          # Установка официального ядра Sing-box для тестов
+          sudo bash -c "$(curl -L https://sing-box.app/install.sh)"
+
+      - name: 🚀 Run SunnyAreral Engine
+        env:
+          # Передаем секреты внутрь Python
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          TG_TOPIC_ID: ${{ secrets.TG_TOPIC_ID }}
+          SUBSCRIPTION_SOURCES: ${{ secrets.SUBSCRIPTION_SOURCES }}
+        run: python main.py
+
+      - name: 💾 Commit & Push Changes
+        run: |
+          git config --global user.name "SunnyAreral Bot"
+          git config --global user.email "bot@sunnyareral.com"
+          
+          # Добавляем только результаты работы
+          git add index.html subscription.txt
+          
+          # Проверяем, есть ли изменения, чтобы не падать с ошибкой
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🚀 Auto-update: $(date -u)" && git push)

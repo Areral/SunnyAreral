@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SunnyAreral | SUB</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            /* Theme: Deep Enterprise Dark */
+            --bg-body: #050505;
+            --bg-card: #121212;
+            --bg-element: #1e1e1e;
+            --bg-hover: #2a2a2a;
+            
+            --accent: #f97316; /* Professional Orange */
+            --accent-dim: rgba(249, 115, 22, 0.15);
+            --accent-glow: rgba(249, 115, 22, 0.4);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            
+            --border: rgba(255, 255, 255, 0.08);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            
+            --trans: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex; justify-content: center;
+            /* Subtle sophisticated gradient */
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            padding: 40px 20px;
+        }
+
+        .container { width: 100%; max-width: 1000px; z-index: 10; }
+
+        /* HEADER */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding: 0 10px; }
+        .logo { 
+            font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; 
+            background: linear-gradient(135deg, #fff 30%, #999 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .status-pill {
+            background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #34d399; font-size: 0.75rem; font-weight: 700;
+            padding: 6px 12px; border-radius: 100px; display: flex; align-items: center; gap: 6px;
+        }
+        .dot { width: 6px; height: 6px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+
+        /* GRID */
+        .main-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+        @media (min-width: 900px) { .main-grid { grid-template-columns: 320px 1fr; } }
+
+        /* CARDS */
+        .glass-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-box {
+            background: var(--bg-element); border-radius: var(--radius-md);
+            padding: 20px; border: 1px solid var(--border);
+            margin-bottom: 12px; display: flex; flex-direction: column; justify-content: space-between;
+            height: 110px; transition: var(--trans);
+        }
+        .stat-box:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        
+        .stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: auto; }
+        .accent-val { color: var(--accent); text-shadow: 0 0 25px var(--accent-glow); }
+
+        .update-box {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: var(--radius-md);
+            margin-top: 24px; border: 1px solid var(--border);
+        }
+        .update-time { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #ccc; }
+
+        /* TABS */
+        .tabs-wrapper {
+            background: #000; padding: 6px; border-radius: 16px;
+            border: 1px solid var(--border); display: inline-flex; width: 100%; margin-bottom: 24px;
+        }
+        .tab-btn {
+            flex: 1; background: transparent; border: none; color: #666;
+            padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; transition: var(--trans); display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .tab-btn:hover { color: #fff; }
+        .tab-btn.active { background: var(--bg-element); color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+
+        /* APPS */
+        .app-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .app-card {
+            background: var(--bg-element); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 12px; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; transition: var(--trans); opacity: 0.6;
+        }
+        .app-card:hover { opacity: 1; background: var(--bg-hover); }
+        .app-card.selected {
+            opacity: 1; border-color: var(--accent); background: rgba(249, 115, 22, 0.05);
+            box-shadow: 0 0 20px var(--accent-dim);
+        }
+        .app-icon { font-size: 1.2rem; }
+        .app-name { font-weight: 600; font-size: 0.9rem; }
+
+        /* TIMELINE */
+        .timeline { position: relative; padding-left: 20px; display: flex; flex-direction: column; gap: 24px; margin-top: 24px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 19px; top: 10px; bottom: 10px;
+            width: 2px; background: #222; border-radius: 2px; z-index: 0;
+        }
+        .step { position: relative; z-index: 1; display: flex; gap: 20px; align-items: flex-start; }
+        .step-icon {
+            width: 40px; height: 40px; min-width: 40px;
+            background: var(--bg-card); border: 2px solid var(--border);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: var(--text-secondary); transition: var(--trans);
+        }
+        .step.active .step-icon { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
+        .step-content { flex: 1; padding-top: 8px; }
+        .step-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; color: #fff; }
+        .step-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+
+        /* BUTTONS */
+        .action-btn {
+            background: var(--bg-element); border: 1px solid var(--border);
+            color: #fff; padding: 12px 20px; border-radius: 10px;
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            text-decoration: none; transition: var(--trans);
+        }
+        .action-btn:hover { background: var(--bg-hover); border-color: #555; }
+        .btn-glow { background: var(--accent); border-color: var(--accent); box-shadow: 0 4px 20px var(--accent-dim); }
+        .btn-glow:hover { background: #ea580c; transform: translateY(-1px); }
+        
+        .btn-ghost { background: transparent; border: 1px solid transparent; color: #666; width: 100%; justify-content: center; margin-top: 8px; }
+        .btn-ghost:hover { border-color: var(--border); color: #fff; }
+
+        /* QR DRAWER */
+        .qr-drawer {
+            height: 0; overflow: hidden; transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex; justify-content: center; align-items: center;
+            background: #fff; border-radius: 12px; margin-top: 0;
+        }
+        .qr-drawer.open { height: 160px; margin-top: 15px; }
+
+        .footer { text-align: center; margin-top: 50px; font-size: 0.8rem; color: #444; }
+        .footer a { color: #666; text-decoration: none; transition: 0.2s; }
+        .footer a:hover { color: var(--accent); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- HEADER -->
+        <div class="header">
+            <div class="brand">
+                <div class="logo">SunnyAreral</div>
+            </div>
+            <div class="status-pill"><span class="dot"></span> Online</div>
+        </div>
+
+        <div class="main-grid">
+            
+            <!-- LEFT: STATISTICS & ACTIONS -->
+            <div class="stats-col">
+                <div class="glass-card">
+                    <div style="margin-bottom: 20px; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Network Status</div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-label"><i class="fa-solid fa-bolt"></i> MAX SPEED</div>
+                        <div class="stat-value accent-val">{{MAX_SPEED}} <span style="font-size: 1rem; opacity: 0.6">Mbps</span></div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-label"><i class="fa-solid fa-server"></i> ACTIVE NODES</div>
+                        <div class="stat-value">{{PROXY_COUNT}}</div>
+                    </div>
+
+                    <div class="update-box">
+                        <div style="font-size: 0.8rem; color: #666; font-weight: 700;">LAST UPDATE</div>
+                        <div class="update-time">{{UPDATE_TIME}} MSK</div>
+                    </div>
+                </div>
+                
+                <!-- COPY & QR AREA -->
+                <div class="glass-card" style="margin-top: 20px; padding: 20px;">
+                    <button class="action-btn" onclick="copySub()" style="width: 100%; justify-content: center;">
+                        <i class="fa-regular fa-copy"></i> <span id="main-copy-text">Скопировать ссылку</span>
+                    </button>
+                    
+                    <button class="action-btn btn-ghost" onclick="toggleQR()">
+                        <i class="fa-solid fa-qrcode"></i> QR Code
+                    </button>
+                    
+                    <div id="qr-left" class="qr-drawer"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT: SETUP WIZARD -->
+            <div class="glass-card wizard-card">
+                
+                <!-- Platform Switcher -->
+                <div class="tabs-wrapper">
+                    <button class="tab-btn" id="tab-android" onclick="switchPlatform('android')"><i class="fa-brands fa-android"></i> Android</button>
+                    <button class="tab-btn" id="tab-ios" onclick="switchPlatform('ios')"><i class="fa-brands fa-apple"></i> iOS</button>
+                    <button class="tab-btn" id="tab-windows" onclick="switchPlatform('windows')"><i class="fa-brands fa-windows"></i> PC</button>
+                </div>
+
+                <!-- App Selection -->
+                <div>
+                    <div style="font-size: 0.8rem; color: #666; font-weight: 700;">ВЫБЕРИТЕ ПРИЛОЖЕНИЕ</div>
+                    <div class="app-selector" id="app-grid"></div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                    
+                    <!-- Step 1: Install -->
+                    <div class="step active">
+                        <div class="step-icon"><i class="fa-solid fa-download"></i></div>
+                        <div class="step-content">
+                            <div class="step-title">Установка</div>
+                            <div class="step-desc">Скачайте и установите приложение для вашего устройства.</div>
+                            <a href="#" target="_blank" id="download-btn" class="action-btn">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> Скачать <span id="app-name-display">App</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Subscribe -->
+                    <div class="step active">
+                        <div class="step-icon"><i class="fa-solid fa-link"></i></div>
+                        <div class="step-content">
+                            <div class="step-title">Добавление подписки</div>
+                            <div class="step-desc">Нажмите кнопку ниже, чтобы скопировать ссылку. В приложении выберите «Импорт из буфера».</div>
+                            <button onclick="copySub()" class="action-btn btn-glow">
+                                <i class="fa-solid fa-plus"></i> <span id="step-copy-text">Копировать ссылку</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Connect -->
+                    <div class="step">
+                        <div class="step-icon"><i class="fa-solid fa-power-off"></i></div>
+                        <div class="step-content">
+                            <div class="step-title">Подключение</div>
+                            <div class="step-desc">Выберите сервер из списка и нажмите кнопку подключения.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="footer">
+            &copy; 2026 SunnyAreral • <a href="https://t.me/SunnyAreral" target="_blank">Telegram</a>
+        </div>
+
+    </div>
+
+    <script>
+        const SUB_URL = "{{SUB_LINK}}";
+        
+        // --- DATABASE OF APPS ---
+        const APPS = {
+            android: [
+                { name: "v2rayNG", icon: "fa-brands fa-android", url: "https://github.com/2dust/v2rayNG/releases" },
+                { name: "NekoBox", icon: "fa-solid fa-box", url: "https://github.com/MatsuriDayo/NekoBoxForAndroid/releases" },
+                { name: "Hiddify", icon: "fa-solid fa-shield-halved", url: "https://play.google.com/store/apps/details?id=app.hiddify.com" }
+            ],
+            ios: [
+                { name: "Streisand", icon: "fa-brands fa-app-store-ios", url: "https://apps.apple.com/us/app/streisand/id6450534064" },
+                { name: "V2Box", icon: "fa-solid fa-cube", url: "https://apps.apple.com/us/app/v2box-v2ray-client/id6446814690" },
+                { name: "Hiddify", icon: "fa-solid fa-shield-halved", url: "https://apps.apple.com/us/app/hiddify-proxy-vpn/id6596588185" }
+            ],
+            windows: [
+                { name: "Hiddify", icon: "fa-brands fa-windows", url: "https://github.com/hiddify/hiddify-app/releases" },
+                { name: "v2rayN", icon: "fa-solid fa-v", url: "https://github.com/2dust/v2rayN/releases" },
+                { name: "NekoBox", icon: "fa-solid fa-cat", url: "https://github.com/MatsuriDayo/nekoray/releases" }
+            ]
+        };
+
+        let currentPlatform = 'android';
+        let currentAppIndex = 0;
+
+        function init() {
+            // Auto-detect
+            const ua = navigator.userAgent.toLowerCase();
+            if (ua.includes("iphone") || ua.includes("ipad") || ua.includes("macintosh")) currentPlatform = 'ios';
+            else if (ua.includes("windows")) currentPlatform = 'windows';
+            
+            updateUI();
+        }
+
+        function switchPlatform(platform) {
+            currentPlatform = platform;
+            currentAppIndex = 0;
+            updateUI();
+        }
+
+        function selectApp(index) {
+            currentAppIndex = index;
+            updateUI();
+        }
+
+        function updateUI() {
+            // Update Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const activeTab = document.getElementById(
+                currentPlatform === 'windows' ? 'tab-windows' : 
+                (currentPlatform === 'ios' ? 'tab-ios' : 'tab-android')
+            );
+            if(activeTab) activeTab.classList.add('active');
+
+            // Render Apps Grid
+            const grid = document.getElementById('app-grid');
+            grid.innerHTML = '';
+            APPS[currentPlatform].forEach((app, index) => {
+                const div = document.createElement('div');
+                div.className = `app-card ${index === currentAppIndex ? 'selected' : ''}`;
+                div.onclick = () => selectApp(index);
+                div.innerHTML = `<i class="${app.icon} app-icon"></i><span class="app-name">${app.name}</span>`;
+                grid.appendChild(div);
+            });
+
+            // Update Download Button
+            const app = APPS[currentPlatform][currentAppIndex];
+            const btn = document.getElementById('download-btn');
+            const nameDisplay = document.getElementById('app-name-display');
+            btn.href = app.url;
+            nameDisplay.innerText = app.name;
+        }
+
+        function copySub() {
+            navigator.clipboard.writeText(SUB_URL).then(() => {
+                showToast("main-copy-text");
+                showToast("step-copy-text");
+            });
+        }
+
+        function showToast(elemId) {
+            const el = document.getElementById(elemId);
+            if(!el) return;
+            const original = el.innerText;
+            el.innerText = "Скопировано!";
+            setTimeout(() => el.innerText = original, 2000);
+        }
+
+        function toggleQR() {
+            const box = document.getElementById('qr-left');
+            box.classList.toggle('open');
+            if(box.innerHTML === "") {
+                new QRCode(box, {
+                    text: SUB_URL,
+                    width: 130, height: 130,
+                    colorDark : "#000000", colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

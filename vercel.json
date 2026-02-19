@@ -1,0 +1,26 @@
+{
+  "rewrites": [
+    {
+      "source": "/sub",
+      "destination": "/subscription.txt"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/sub",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "Profile-Title", "value": "SunnyAreral Premium" },
+        { "key": "Profile-Update-Interval", "value": "6" },
+        { "key": "Subscription-Userinfo", "value": "upload=0; download=0; total=10737418240000000; expire=0" },
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+system:
+  threads: 20
+  tcp_timeout: 4.0
+  http_timeout: 30.0
+  user_agent: "v2rayNG/1.8.5"
+
+checking:
+  # Проверка на наличие интернета (код 204)
+  connectivity_urls:
+    - "http://cp.cloudflare.com/"
+    - "http://www.gstatic.com/generate_204"
+  
+  # Тест скорости
+  speedtest_url: "http://speed.cloudflare.com/__down?bytes=5000000" # 5 MB
+  min_speed: 2.5      # Mbps
+  champion_speed: 8.0 # Mbps (Early exit)
+
+  # Геолокация
+  geo_api: "https://ipwho.is/"
+
+app:
+  public_url: "https://sunny-areral.vercel.app"
+  app_title: "SunnyAreral | SUB"
+  template_path: "config/template.html"
