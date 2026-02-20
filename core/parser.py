@@ -26,8 +26,8 @@ class LinkParser:
     def is_valid_host(host: str) -> bool:
         if not host: 
             return False
-        # ИСПРАВЛЕНА ОШИБКА SYNTAX ERROR (Добавлен список локальных хостов)
-        if host.lower() in ['localhost', '127.0.0.1', '0.0.0.0', 'telegramkanal']: 
+        # Полный список мусорных хостов
+        if host.lower() in: 
             return False
         try:
             ip = ipaddress.ip_address(host)
@@ -50,17 +50,17 @@ class LinkParser:
                 server=host,
                 port=u.port,
                 uuid=u.username,
-                type=q.get('type', ['tcp'])[0],
-                security=q.get('security', ['none'])[0],
-                path=q.get('path', ['/'])[0],
-                host=q.get('host', [''])[0],
-                sni=q.get('sni', [''])[0],
-                fp=q.get('fp', ['chrome'])[0] or 'chrome',
-                pbk=q.get('pbk', [''])[0],
-                sid=q.get('sid', [''])[0],
-                flow=q.get('flow', [''])[0],
-                service_name=q.get('serviceName', [''])[0],
-                spx=q.get('spx', [''])[0]
+                type=q.get('type',),
+                security=q.get('security',),
+                path=q.get('path',),
+                host=q.get('host',),
+                sni=q.get('sni',),
+                fp=q.get('fp',) or 'chrome',
+                pbk=q.get('pbk',),
+                sid=q.get('sid',),
+                flow=q.get('flow',),
+                service_name=q.get('serviceName',),
+                spx=q.get('spx',)
             )
             return ProxyNode(protocol="vless", config=conf, raw_uri=line)
         except Exception: return None
@@ -88,7 +88,7 @@ class LinkParser:
             )
             if conf.tls == "tls": conf.security = "tls"
             return ProxyNode(protocol="vmess", config=conf, raw_uri=line)
-        except: return None
+        except Exception: return None
 
     @staticmethod
     def parse_trojan(line: str) -> ProxyNode | None:
@@ -106,48 +106,48 @@ class LinkParser:
                 port=u.port,
                 password=u.username,
                 security="tls",
-                sni=q.get('sni', [''])[0] or q.get('peer', [''])[0],
-                type=q.get('type', ['tcp'])[0],
-                path=q.get('path', ['/'])[0],
-                host=q.get('host', [''])[0]
+                sni=q.get('sni',) or q.get('peer',),
+                type=q.get('type',),
+                path=q.get('path',),
+                host=q.get('host',)
             )
             return ProxyNode(protocol="trojan", config=conf, raw_uri=line)
-        except: return None
+        except Exception: return None
 
     @staticmethod
     def parse_ss(line: str) -> ProxyNode | None:
         try:
             if '@' not in line: return None
             part1, part2 = line.split('@', 1)
-            user_info = LinkParser.decode_base64(part1[5:]).split(':')
+            user_info = LinkParser.decode_base64(part1).split(':')
             if len(user_info) != 2: return None
             
-            host_port = part2.split('#')[0].split(':')
-            host = host_port[0]
+            host_port = part2.split('#').split(':')
+            host = host_port
             if not host or not LinkParser.is_valid_host(host): return None
             if len(host_port) < 2: return None
 
             conf = ProxyConfig(
                 server=host,
-                port=int(host_port[1]),
-                method=user_info[0],
-                password=user_info[1],
+                port=int(host_port),
+                method=user_info,
+                password=user_info,
                 type="tcp"
             )
             return ProxyNode(protocol="ss", config=conf, raw_uri=line)
-        except: return None
+        except Exception: return None
 
-    async def fetch_and_parse(self) -> List[ProxyNode]:
+    async def fetch_and_parse(self) -> List:
         nodes = []
         seen = set()
-        sources = []
+        sources =[]
         
         if CONFIG.SUBSCRIPTION_SOURCES:
-            sources = [s.strip() for s in CONFIG.SUBSCRIPTION_SOURCES.splitlines() if s.strip()]
+            sources =
 
         if not sources:
-            logger.error("Нет источников! Проверьте секрет SUBSCRIPTION_SOURCES.")
-            return []
+            logger.error("❌ Нет источников! Проверьте секрет SUBSCRIPTION_SOURCES.")
+            return[]
 
         logger.info(f"📥 Загрузка из {len(sources)} источников...")
 
