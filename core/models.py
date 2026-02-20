@@ -7,26 +7,26 @@ class ProxyConfig(BaseModel):
     port: int = Field(ge=1, le=65535)
     
     # Common fields
-    uuid: Optional = None
-    password: Optional = None
+    uuid: Optional[str] = None
+    password: Optional[str] = None
     
-    # Transport (Добавлены xhttp и httpupgrade)
-    type: Literal = "tcp"
+    # Transport (Добавлены современные типы xhttp и httpupgrade)
+    type: Literal["tcp", "ws", "grpc", "xhttp", "httpupgrade"] = "tcp"
     path: str = "/"
-    host: Optional = None
-    service_name: Optional = None
+    host: Optional[str] = None
+    service_name: Optional[str] = None
     
     # Security
-    security: Literal = "none"
-    sni: Optional = None
+    security: Literal["none", "tls", "reality", "auto"] = "none"
+    sni: Optional[str] = None
     fp: str = "chrome"
-    pbk: Optional = None
-    sid: Optional = None
-    flow: Optional = None
+    pbk: Optional[str] = None
+    sid: Optional[str] = None
+    flow: Optional[str] = None
 
 class ProxyNode(BaseModel):
     """Объект прокси в системе"""
-    protocol: Literal
+    protocol: Literal["vless", "vmess", "trojan", "ss", "hysteria2"]
     config: ProxyConfig
     raw_uri: str
     
@@ -39,4 +39,5 @@ class ProxyNode(BaseModel):
 
     @property
     def unique_id(self) -> str:
+        """Уникальный отпечаток для защиты от дубликатов"""
         return f"{self.protocol}://{self.config.server}:{self.config.port}"
