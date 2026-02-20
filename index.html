@@ -13,23 +13,28 @@
 
     <style>
         :root {
-            /* Theme: Deep Enterprise Dark */
-            --bg-body: #050505;
+            /* Theme: Warm Matte Ash & Amber */
+            --bg-body: #0a0a0a;
             --bg-card: #121212;
-            --bg-element: #1e1e1e;
-            --bg-hover: #2a2a2a;
+            --bg-element: #1a1a1a;
+            --bg-hover: #222222;
             
-            --accent: #f97316; /* Professional Orange */
+            --accent: #f97316; /* Warm Orange */
             --accent-dim: rgba(249, 115, 22, 0.15);
-            --accent-glow: rgba(249, 115, 22, 0.4);
+            --accent-glow: rgba(249, 115, 22, 0.3);
+            --amber: #fbbf24; /* Warm Yellow/Amber for status */
             
-            --text-primary: #ffffff;
-            --text-secondary: #a1a1aa;
+            --text-primary: #f5f5f5;
+            --text-secondary: #888888;
+            --text-muted: #555555;
             
-            --border: rgba(255, 255, 255, 0.08);
-            --radius-lg: 24px;
-            --radius-md: 16px;
-            --radius-sm: 12px;
+            --border: #262626;
+            --border-light: #333333;
+            
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
             
             --trans: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
@@ -42,131 +47,196 @@
             color: var(--text-primary);
             min-height: 100vh;
             display: flex; justify-content: center;
-            /* Subtle sophisticated gradient */
+            /* Warm, ash-orange subtle glows */
             background-image: 
-                radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 10% 0%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 100%, rgba(251, 191, 36, 0.03) 0%, transparent 40%);
+            background-attachment: fixed;
             padding: 40px 20px;
+            line-height: 1.5;
         }
 
-        .container { width: 100%; max-width: 1000px; z-index: 10; }
+        .container { width: 100%; max-width: 900px; z-index: 10; display: flex; flex-direction: column; gap: 40px; }
 
-        /* HEADER */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding: 0 10px; }
-        .logo { 
-            font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; 
-            background: linear-gradient(135deg, #fff 30%, #999 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        /* --- TYPOGRAPHY & BUTTONS --- */
+        h1, h2, h3 { color: var(--text-primary); font-weight: 800; letter-spacing: -0.5px; }
+        
+        .btn-primary {
+            background: var(--accent); color: #fff; border: none;
+            padding: 14px 28px; border-radius: var(--radius-md);
+            font-weight: 700; font-size: 1rem; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            transition: var(--trans); text-decoration: none;
+            box-shadow: 0 4px 20px var(--accent-dim);
         }
-        .status-pill {
-            background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
-            color: #34d399; font-size: 0.75rem; font-weight: 700;
-            padding: 6px 12px; border-radius: 100px; display: flex; align-items: center; gap: 6px;
+        .btn-primary:hover { background: #ea580c; transform: translateY(-2px); box-shadow: 0 6px 25px var(--accent-glow); }
+        
+        .btn-secondary {
+            background: var(--bg-element); border: 1px solid var(--border);
+            color: var(--text-primary); padding: 12px 20px; border-radius: var(--radius-md);
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            text-decoration: none; transition: var(--trans);
         }
-        .dot { width: 6px; height: 6px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+        .btn-secondary:hover { background: var(--bg-hover); border-color: var(--border-light); }
 
-        /* GRID */
-        .main-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
-        @media (min-width: 900px) { .main-grid { grid-template-columns: 320px 1fr; } }
+        /* --- HERO SECTION --- */
+        .hero { text-align: center; padding: 40px 0; }
+        .hero-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.15);
+            color: var(--amber); font-size: 0.8rem; font-weight: 700;
+            padding: 6px 14px; border-radius: 100px; margin-bottom: 24px;
+        }
+        .dot { width: 6px; height: 6px; background: var(--amber); border-radius: 50%; box-shadow: 0 0 10px var(--amber); }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 16px; line-height: 1.1; }
+        .hero h1 span { color: var(--accent); }
+        .hero p { color: var(--text-secondary); font-size: 1.1rem; max-width: 500px; margin: 0 auto 30px auto; }
 
-        /* CARDS */
-        .glass-card {
+        /* --- GRID LAYOUT --- */
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+        @media (min-width: 800px) { .grid-2 { grid-template-columns: 1fr 1.5fr; } }
+
+        /* --- CARDS --- */
+        .card {
             background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 24px;
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg); padding: 28px;
         }
 
+        /* Stats */
+        .stat-group { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
         .stat-box {
             background: var(--bg-element); border-radius: var(--radius-md);
             padding: 20px; border: 1px solid var(--border);
-            margin-bottom: 12px; display: flex; flex-direction: column; justify-content: space-between;
-            height: 110px; transition: var(--trans);
+            display: flex; flex-direction: column; justify-content: space-between; height: 110px;
         }
-        .stat-box:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
-        
         .stat-label { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
         .stat-value { font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: auto; }
-        .accent-val { color: var(--accent); text-shadow: 0 0 25px var(--accent-glow); }
+        .text-accent { color: var(--accent); text-shadow: 0 0 20px var(--accent-dim); }
 
         .update-box {
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.03); padding: 15px; border-radius: var(--radius-md);
-            margin-top: 24px; border: 1px solid var(--border);
+            background: var(--bg-element); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border);
         }
-        .update-time { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #ccc; }
 
-        /* TABS */
-        .tabs-wrapper {
-            background: #000; padding: 6px; border-radius: 16px;
-            border: 1px solid var(--border); display: inline-flex; width: 100%; margin-bottom: 24px;
-        }
+        /* --- WIZARD --- */
+        .tabs { display: flex; background: var(--bg-body); padding: 6px; border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 24px; }
         .tab-btn {
-            flex: 1; background: transparent; border: none; color: #666;
-            padding: 10px; border-radius: 12px; font-weight: 700; font-size: 0.9rem;
+            flex: 1; background: transparent; border: none; color: var(--text-secondary);
+            padding: 10px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.9rem;
             cursor: pointer; transition: var(--trans); display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .tab-btn:hover { color: #fff; }
-        .tab-btn.active { background: var(--bg-element); color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 1px solid var(--border); }
+        .tab-btn.active { background: var(--bg-element); color: #fff; border: 1px solid var(--border-light); }
 
-        /* APPS */
-        .app-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 10px; }
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 12px; }
         .app-card {
             background: var(--bg-element); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); padding: 12px; cursor: pointer;
-            display: flex; align-items: center; gap: 10px; transition: var(--trans); opacity: 0.6;
+            border-radius: var(--radius-sm); padding: 14px 10px; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 8px; transition: var(--trans); text-align: center;
         }
-        .app-card:hover { opacity: 1; background: var(--bg-hover); }
-        .app-card.selected {
-            opacity: 1; border-color: var(--accent); background: rgba(249, 115, 22, 0.05);
-            box-shadow: 0 0 20px var(--accent-dim);
-        }
-        .app-icon { font-size: 1.2rem; }
-        .app-name { font-weight: 600; font-size: 0.9rem; }
+        .app-card:hover { background: var(--bg-hover); }
+        .app-card.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+        .app-icon { font-size: 1.5rem; }
+        .app-name { font-weight: 600; font-size: 0.85rem; }
 
-        /* TIMELINE */
-        .timeline { position: relative; padding-left: 20px; display: flex; flex-direction: column; gap: 24px; margin-top: 24px; }
-        .timeline::before {
-            content: ''; position: absolute; left: 19px; top: 10px; bottom: 10px;
-            width: 2px; background: #222; border-radius: 2px; z-index: 0;
-        }
-        .step { position: relative; z-index: 1; display: flex; gap: 20px; align-items: flex-start; }
+        /* Timeline */
+        .timeline { position: relative; padding-left: 24px; display: flex; flex-direction: column; gap: 32px; margin-top: 32px; }
+        .timeline::before { content: ''; position: absolute; left: 23px; top: 10px; bottom: 10px; width: 2px; background: var(--border); }
+        .step { position: relative; z-index: 1; display: flex; gap: 20px; }
         .step-icon {
-            width: 40px; height: 40px; min-width: 40px;
+            width: 48px; height: 48px; min-width: 48px; margin-left: -24px;
             background: var(--bg-card); border: 2px solid var(--border);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; color: var(--text-secondary); transition: var(--trans);
+            font-size: 1.1rem; color: var(--text-secondary);
         }
-        .step.active .step-icon { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
-        .step-content { flex: 1; padding-top: 8px; }
-        .step-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; color: #fff; }
-        .step-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+        .step.active .step-icon { border-color: var(--accent); color: var(--accent); background: var(--bg-element); }
+        .step-content { padding-top: 10px; width: 100%; }
+        .step-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+        .step-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; }
 
-        /* BUTTONS */
-        .action-btn {
-            background: var(--bg-element); border: 1px solid var(--border);
-            color: #fff; padding: 12px 20px; border-radius: 10px;
-            font-weight: 600; font-size: 0.9rem; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 8px;
-            text-decoration: none; transition: var(--trans);
+        /* --- FAQ SECTION --- */
+        .faq-section { margin-top: 40px; }
+        .faq-section h2 { margin-bottom: 24px; }
+        .faq-item {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); margin-bottom: 12px; overflow: hidden;
         }
-        .action-btn:hover { background: var(--bg-hover); border-color: #555; }
-        .btn-glow { background: var(--accent); border-color: var(--accent); box-shadow: 0 4px 20px var(--accent-dim); }
-        .btn-glow:hover { background: #ea580c; transform: translateY(-1px); }
-        
-        .btn-ghost { background: transparent; border: 1px solid transparent; color: #666; width: 100%; justify-content: center; margin-top: 8px; }
-        .btn-ghost:hover { border-color: var(--border); color: #fff; }
+        .faq-header {
+            padding: 20px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-weight: 600; font-size: 1rem; transition: var(--trans);
+        }
+        .faq-header:hover { background: var(--bg-element); }
+        .faq-icon { transition: transform 0.3s ease; color: var(--text-secondary); }
+        .faq-content {
+            max-height: 0; padding: 0 20px; opacity: 0; transition: all 0.3s ease;
+            color: var(--text-secondary); font-size: 0.95rem;
+        }
+        .faq-item.active .faq-icon { transform: rotate(180deg); color: var(--accent); }
+        .faq-item.active .faq-content { max-height: 200px; padding: 0 20px 20px 20px; opacity: 1; }
 
-        /* QR DRAWER */
-        .qr-drawer {
-            height: 0; overflow: hidden; transition: height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        /* --- MODALS (POPUPS) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center;
-            background: #fff; border-radius: 12px; margin-top: 0;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: var(--trans);
+            padding: 20px;
         }
-        .qr-drawer.open { height: 160px; margin-top: 15px; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-xl); width: 100%; max-width: 500px;
+            transform: translateY(20px); transition: var(--trans);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        
+        .modal-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+        .btn-close:hover { color: #fff; }
+        
+        .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        
+        /* Rule Items */
+        .rule-item {
+            background: var(--bg-element); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 16px; display: flex; gap: 16px;
+        }
+        .rule-icon { font-size: 1.5rem; color: #ef4444; margin-top: 4px; }
+        .rule-icon.blue { color: #3b82f6; } /* Minor exceptions for semantic icons */
+        .rule-icon.amber { color: var(--amber); }
+        .rule-title { font-weight: 700; margin-bottom: 4px; color: #fff; }
+        .rule-text { font-size: 0.85rem; color: var(--text-secondary); }
 
-        .footer { text-align: center; margin-top: 50px; font-size: 0.8rem; color: #444; }
-        .footer a { color: #666; text-decoration: none; transition: 0.2s; }
+        /* Config Items */
+        .config-item {
+            background: var(--bg-element); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 16px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center; transition: var(--trans);
+        }
+        .config-item:hover { background: var(--bg-hover); border-color: var(--border-light); }
+        .config-item.premium { border-color: rgba(249, 115, 22, 0.3); background: rgba(249, 115, 22, 0.05); }
+        .config-item.premium:hover { border-color: var(--accent); }
+        .config-item.disabled { opacity: 0.5; cursor: not-allowed; }
+        .config-item.disabled:hover { background: var(--bg-element); border-color: var(--border); }
+        
+        .config-info h4 { font-size: 1rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .config-info p { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary); color: var(--bg-body); padding: 12px 24px;
+            border-radius: 100px; font-weight: 700; font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2000; opacity: 0;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .footer { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding-bottom: 20px; }
+        .footer a { color: var(--text-secondary); text-decoration: none; }
         .footer a:hover { color: var(--accent); }
 
     </style>
@@ -175,119 +245,206 @@
 
     <div class="container">
         
-        <!-- HEADER -->
-        <div class="header">
-            <div class="brand">
-                <div class="logo">SunnyAreral</div>
-            </div>
-            <div class="status-pill"><span class="dot"></span> Online</div>
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-pill"><span class="dot"></span> Системы работают стабильно</div>
+            <h1>SunnyAreral <span>Config</span></h1>
+            <p>Надежный агрегатор прокси-серверов. Отборные узлы, проверенные на скорость и стабильность.</p>
+            <button class="btn-primary" onclick="openModal('rules-modal')" style="padding: 16px 36px; font-size: 1.1rem;">
+                <i class="fa-solid fa-key"></i> Получить ключи
+            </button>
         </div>
 
-        <div class="main-grid">
-            
-            <!-- LEFT: STATISTICS & ACTIONS -->
-            <div class="stats-col">
-                <div class="glass-card">
-                    <div style="margin-bottom: 20px; font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Network Status</div>
-                    
+        <div class="grid-2">
+            <!-- LEFT: STATS -->
+            <div class="card">
+                <h3 style="margin-bottom: 20px; font-size: 1rem; color: var(--text-secondary);">Текущая сводка</h3>
+                
+                <div class="stat-group">
                     <div class="stat-box">
-                        <div class="stat-label"><i class="fa-solid fa-bolt"></i> MAX SPEED</div>
-                        <div class="stat-value accent-val">97 <span style="font-size: 1rem; opacity: 0.6">Mbps</span></div>
+                        <div class="stat-label"><i class="fa-solid fa-bolt"></i> Макс. Скорость</div>
+                        <div class="stat-value text-accent">166 <span style="font-size: 1rem; color: var(--text-muted);">Mbps</span></div>
                     </div>
-
                     <div class="stat-box">
-                        <div class="stat-label"><i class="fa-solid fa-server"></i> ACTIVE NODES</div>
-                        <div class="stat-value">43</div>
-                    </div>
-
-                    <div class="update-box">
-                        <div style="font-size: 0.8rem; color: #666; font-weight: 700;">LAST UPDATE</div>
-                        <div class="update-time">20.02 11:54 MSK</div>
+                        <div class="stat-label"><i class="fa-solid fa-server"></i> Активные узлы</div>
+                        <div class="stat-value">84</div>
                     </div>
                 </div>
-                
-                <!-- COPY & QR AREA -->
-                <div class="glass-card" style="margin-top: 20px; padding: 20px;">
-                    <button class="action-btn" onclick="copySub()" style="width: 100%; justify-content: center;">
-                        <i class="fa-regular fa-copy"></i> <span id="main-copy-text">Скопировать ссылку</span>
-                    </button>
-                    
-                    <button class="action-btn btn-ghost" onclick="toggleQR()">
-                        <i class="fa-solid fa-qrcode"></i> QR Code
-                    </button>
-                    
-                    <div id="qr-left" class="qr-drawer"></div>
+
+                <div class="update-box">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Последнее обновление</div>
+                        <div class="update-time" style="color: #fff; margin-top: 4px;">20.02 15:19 MSK</div>
+                    </div>
+                    <i class="fa-regular fa-clock" style="font-size: 1.5rem; color: var(--text-secondary);"></i>
                 </div>
             </div>
 
-            <!-- RIGHT: SETUP WIZARD -->
-            <div class="glass-card wizard-card">
+            <!-- RIGHT: WIZARD -->
+            <div class="card">
+                <h3 style="margin-bottom: 20px; font-size: 1rem;">Центр установки</h3>
                 
-                <!-- Platform Switcher -->
-                <div class="tabs-wrapper">
+                <div class="tabs">
                     <button class="tab-btn" id="tab-android" onclick="switchPlatform('android')"><i class="fa-brands fa-android"></i> Android</button>
                     <button class="tab-btn" id="tab-ios" onclick="switchPlatform('ios')"><i class="fa-brands fa-apple"></i> iOS</button>
-                    <button class="tab-btn" id="tab-windows" onclick="switchPlatform('windows')"><i class="fa-brands fa-windows"></i> PC</button>
+                    <button class="tab-btn" id="tab-windows" onclick="switchPlatform('windows')"><i class="fa-brands fa-windows"></i> ПК</button>
                 </div>
 
-                <!-- App Selection -->
-                <div>
-                    <div style="font-size: 0.8rem; color: #666; font-weight: 700;">ВЫБЕРИТЕ ПРИЛОЖЕНИЕ</div>
-                    <div class="app-selector" id="app-grid"></div>
-                </div>
-
-                <!-- Timeline -->
                 <div class="timeline">
-                    
-                    <!-- Step 1: Install -->
+                    <!-- Step 1 -->
                     <div class="step active">
                         <div class="step-icon"><i class="fa-solid fa-download"></i></div>
                         <div class="step-content">
-                            <div class="step-title">Установка</div>
-                            <div class="step-desc">Скачайте и установите приложение для вашего устройства.</div>
-                            <a href="#" target="_blank" id="download-btn" class="action-btn">
-                                <i class="fa-solid fa-cloud-arrow-down"></i> Скачать <span id="app-name-display">App</span>
+                            <div class="step-title">Установка приложения</div>
+                            <div class="step-desc">Выберите клиент для вашего устройства и установите его.</div>
+                            <div class="app-grid" id="app-grid"></div>
+                            <a href="#" target="_blank" id="download-btn" class="btn-secondary" style="margin-top: 16px; width: 100%;">
+                                Скачать <span id="app-name-display" style="margin-left: 4px;">App</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: auto;"></i>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Step 2: Subscribe -->
+                    <!-- Step 2 -->
                     <div class="step active">
                         <div class="step-icon"><i class="fa-solid fa-link"></i></div>
                         <div class="step-content">
                             <div class="step-title">Добавление подписки</div>
-                            <div class="step-desc">Нажмите кнопку ниже, чтобы скопировать ссылку. В приложении выберите «Импорт из буфера».</div>
-                            <button onclick="copySub()" class="action-btn btn-glow">
-                                <i class="fa-solid fa-plus"></i> <span id="step-copy-text">Копировать ссылку</span>
+                            <div class="step-desc">Скопируйте ссылку и добавьте её в скачанное приложение (обычно раздел "Подписки" или "Группы").</div>
+                            <button class="btn-primary" onclick="copySub()" style="width: 100%;">
+                                <i class="fa-regular fa-copy"></i> Скопировать ссылку
                             </button>
                         </div>
                     </div>
-
-                    <!-- Step 3: Connect -->
-                    <div class="step">
-                        <div class="step-icon"><i class="fa-solid fa-power-off"></i></div>
-                        <div class="step-content">
-                            <div class="step-title">Подключение</div>
-                            <div class="step-desc">Выберите сервер из списка и нажмите кнопку подключения.</div>
-                        </div>
-                    </div>
-
                 </div>
+            </div>
+        </div>
 
+        <!-- FAQ -->
+        <div class="faq-section">
+            <h2>Частые вопросы</h2>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-header">
+                    Как это работает? <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-content">
+                    Мой бот автоматически собирает конфигурации из открытых источников, прогоняет их через жесткие тесты скорости и пинга, отсеивает нерабочий мусор и формирует единую умную ссылку. Вам достаточно вставить её в приложение, и ключи будут обновляться сами.
+                </div>
             </div>
 
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-header">
+                    Это безопасно? <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-content">
+                    Все конфиги собираются из открытого доступа. Современные протоколы (VLESS/Reality) надежно шифруют ваш трафик от провайдера. Однако, как и с любым публичным VPN, мы не рекомендуем использовать эти сервера для авторизации в банковских приложениях.
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-header">
+                    Как часто обновляются ключи? <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-content">
+                    Система проводит полную перепроверку серверов и обновляет список каждые 4 часа. В вашем приложении (например, v2rayNG или Hiddify) можно настроить автообновление подписки.
+                </div>
+            </div>
         </div>
 
         <div class="footer">
-            &copy; 2026 SunnyAreral • <a href="https://t.me/SunnyAreral" target="_blank">Telegram</a>
+            &copy; 2026 SunnyAreral • <a href="https://t.me/SunnyAreral" target="_blank">Telegram Форум</a>
         </div>
-
     </div>
+
+    <!-- MODAL: RULES -->
+    <div class="modal-overlay" id="rules-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fa-solid fa-clipboard-check" style="color: var(--accent);"></i> Правила использования</div>
+                <button class="btn-close" onclick="closeModal('rules-modal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">Для доступа к ключам подтвердите согласие с правилами:</p>
+                
+                <div class="rule-item">
+                    <i class="fa-solid fa-ban rule-icon"></i>
+                    <div>
+                        <div class="rule-title">Никаких торрентов</div>
+                        <div class="rule-text">P2P трафик строго запрещен. Скачивание торрентов приводит к моментальной блокировке серверов провайдерами.</div>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <i class="fa-solid fa-shield-halved rule-icon blue"></i>
+                    <div>
+                        <div class="rule-title">Адекватное использование</div>
+                        <div class="rule-text">Конфиги предназначены для обхода блокировок и просмотра контента, а не для DDoS атак или спама.</div>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <i class="fa-solid fa-gear rule-icon amber"></i>
+                    <div>
+                        <div class="rule-title">Самостоятельная настройка</div>
+                        <div class="rule-text">Вы обязуетесь самостоятельно решать базовые проблемы (смена сервера, обновление подписки в приложении).</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="acceptRules()" style="margin-top: 10px; width: 100%;">Я принимаю условия</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CONFIGS -->
+    <div class="modal-overlay" id="configs-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fa-solid fa-server" style="color: var(--accent);"></i> Конфигурации</div>
+                <button class="btn-close" onclick="closeModal('configs-modal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                
+                <!-- Main Active Config -->
+                <div class="config-item premium" onclick="copySubAndClose()">
+                    <div class="config-info">
+                        <h4><i class="fa-solid fa-star" style="color: var(--accent);"></i> Отборные серверы <span style="font-size: 0.7rem; background: var(--accent); color:#fff; padding: 2px 6px; border-radius: 4px;">Premium</span></h4>
+                        <p>Рекомендуется. Проверенные на скорость и стабильность сервера от SunnyAreral.</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--text-muted);"></i>
+                </div>
+
+                <!-- Disabled Mock Configs for visual hierarchy -->
+                <div class="config-item disabled">
+                    <div class="config-info">
+                        <h4><i class="fa-solid fa-filter"></i> Фильтрованный список</h4>
+                        <p>Редко обновляется, но стабилен. (Временно отключено)</p>
+                    </div>
+                </div>
+
+                <div class="config-item disabled">
+                    <div class="config-info">
+                        <h4><i class="fa-solid fa-box-archive"></i> Все конфиги (Merged)</h4>
+                        <p>Свалка без фильтрации. Может быть много мусора. (Отключено)</p>
+                    </div>
+                </div>
+
+                <div style="background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.1); padding: 16px; border-radius: var(--radius-md); margin-top: 10px;">
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--amber);"></i> 
+                        Совет: Настройте в вашем приложении автоматическое обновление подписки раз в несколько часов, чтобы всегда иметь рабочие узлы.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">Ссылка скопирована!</div>
 
     <script>
         const SUB_URL = "https://sunny-areral.vercel.app/sub";
         
-        // --- DATABASE OF APPS ---
+        // APPS DB
         const APPS = {
             android: [
                 { name: "v2rayNG", icon: "fa-brands fa-android", url: "https://github.com/2dust/v2rayNG/releases" },
@@ -310,11 +467,9 @@
         let currentAppIndex = 0;
 
         function init() {
-            // Auto-detect
             const ua = navigator.userAgent.toLowerCase();
             if (ua.includes("iphone") || ua.includes("ipad") || ua.includes("macintosh")) currentPlatform = 'ios';
             else if (ua.includes("windows")) currentPlatform = 'windows';
-            
             updateUI();
         }
 
@@ -330,7 +485,6 @@
         }
 
         function updateUI() {
-            // Update Tabs
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             const activeTab = document.getElementById(
                 currentPlatform === 'windows' ? 'tab-windows' : 
@@ -338,18 +492,16 @@
             );
             if(activeTab) activeTab.classList.add('active');
 
-            // Render Apps Grid
             const grid = document.getElementById('app-grid');
             grid.innerHTML = '';
             APPS[currentPlatform].forEach((app, index) => {
                 const div = document.createElement('div');
                 div.className = `app-card ${index === currentAppIndex ? 'selected' : ''}`;
                 div.onclick = () => selectApp(index);
-                div.innerHTML = `<i class="${app.icon} app-icon"></i><span class="app-name">${app.name}</span>`;
+                div.innerHTML = `<i class="${app.icon} app-icon"></i><div class="app-name">${app.name}</div>`;
                 grid.appendChild(div);
             });
 
-            // Update Download Button
             const app = APPS[currentPlatform][currentAppIndex];
             const btn = document.getElementById('download-btn');
             const nameDisplay = document.getElementById('app-name-display');
@@ -357,32 +509,31 @@
             nameDisplay.innerText = app.name;
         }
 
+        // Modals Logic
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        
+        function acceptRules() {
+            closeModal('rules-modal');
+            setTimeout(() => openModal('configs-modal'), 300);
+        }
+
+        function copySubAndClose() {
+            closeModal('configs-modal');
+            copySub();
+        }
+
         function copySub() {
             navigator.clipboard.writeText(SUB_URL).then(() => {
-                showToast("main-copy-text");
-                showToast("step-copy-text");
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
             });
         }
 
-        function showToast(elemId) {
-            const el = document.getElementById(elemId);
-            if(!el) return;
-            const original = el.innerText;
-            el.innerText = "Скопировано!";
-            setTimeout(() => el.innerText = original, 2000);
-        }
-
-        function toggleQR() {
-            const box = document.getElementById('qr-left');
-            box.classList.toggle('open');
-            if(box.innerHTML === "") {
-                new QRCode(box, {
-                    text: SUB_URL,
-                    width: 130, height: 130,
-                    colorDark : "#000000", colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.M
-                });
-            }
+        // FAQ Toggle
+        function toggleFaq(element) {
+            element.classList.toggle('active');
         }
 
         init();
