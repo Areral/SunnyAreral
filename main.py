@@ -17,26 +17,32 @@ async def main():
     nodes = await parser.fetch_and_parse()
     
     if not nodes:
-        logger.error("❌ Не найдено ни одной валидной ссылки.")
+        logger.error("❌ Не найдено ни одной валидной ссылки. Завершение.")
         sys.exit(0)
 
     # 2. INSPECTION (BATCH MODE)
     inspector = Inspector()
     logger.info("🔬 Начинаем пакетную проверку (Batch Engine)...")
     
-    # Получаем живые узлы и телеметрию
-    alive_nodes, error_stats = await inspector.process_all(nodes)
+    # ВЫЗОВ НОВОГО МЕТОДА
+    alive_nodes = await inspector.process_all(nodes)
     
     logger.success(f"🏁 Проверка завершена. Живых узлов: {len(alive_nodes)}")
 
     # 3. CHAMPION TEST
     if alive_nodes:
+        # Сортируем, берем первого кандидата
         alive_nodes.sort(key=lambda x: x.speed, reverse=True)
-        champion_node = alive_nodes[0]
+        champion = alive_nodes[0]
         
-        new_speed = await inspector.engine.champion_run(champion_node)
+        # Перепроверяем на тяжелом файле
+        logger.info(f"🏆 Финал: тестируем чемпиона {champion.config.server}...")
+        # Меняем URL теста временно (хак для батч-движка) или используем логику
+        # В данном случае просто берем текущую скорость, так как батч-тест уже достаточно точен
+        # Но для красоты можно перепроверить:
+        new_speed = await inspector.champion_run(champion)
         if new_speed > 0:
-            champion_node.speed = new_speed
+            champion.speed = new_speed
             alive_nodes.sort(key=lambda x: x.speed, reverse=True)
 
     # 4. EXPORT
@@ -45,9 +51,9 @@ async def main():
     else:
         logger.warning("⚠️ Нет рабочих прокси для сохранения.")
 
-    # 5. REPORTING (with Telemetry)
+    # 5. REPORTING
     duration = time.perf_counter() - start_time
-    await Exporter.send_telegram_report(len(nodes), alive_nodes, error_stats, duration)
+    await Exporter.send_telegram_report(len(nodes), alive_nodes, duration)
     
     logger.info(f"✅ Система завершила работу за {duration:.2f} сек.")
 
