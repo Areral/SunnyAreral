@@ -13,12 +13,12 @@ class Exporter:
     @staticmethod
     def _flag(code: str) -> str:
         if not code or code == "UN": return "🏳️"
-        try: return chr(ord(code) + 127397) + chr(ord(code) + 127397)
-        except Exception: return "🏳️"
+        try: return chr(ord(code[0]) + 127397) + chr(ord(code[1]) + 127397)
+        except: return "🏳️"
 
     @staticmethod
-    def generate_subscription(nodes: List) -> str:
-        links =[]
+    def generate_subscription(nodes: List[ProxyNode]) -> str:
+        links = []
         nodes.sort(key=lambda x: x.speed, reverse=True)
         
         for i, node in enumerate(nodes, 1):
@@ -26,7 +26,6 @@ class Exporter:
             cc = node.country
             sni = node.config.sni or node.config.host or node.config.server
             proto = node.protocol.upper()
-            
             name = f"{i:02d} {flag} {cc} | {sni} | {proto} | @SunnyAreral"
             
             parsed = urllib.parse.urlparse(node.raw_uri)
@@ -38,19 +37,20 @@ class Exporter:
         return base64.b64encode(full_text.encode('utf-8')).decode('utf-8')
 
     @staticmethod
-    def save_files(nodes: List):
+    def save_files(nodes: List[ProxyNode]):
         content_b64 = Exporter.generate_subscription(nodes)
-        with open("subscription.txt", "w") as f: 
+        
+        with open("subscription.txt", "w") as f:
             f.write(content_b64)
             
         template_path = CONFIG.app.get('template_path', 'config/template.html')
         if os.path.exists(template_path):
             try:
-                with open(template_path, "r", encoding="utf-8") as f: 
+                with open(template_path, "r", encoding="utf-8") as f:
                     tpl = f.read()
                 
-                # ИСПРАВЛЕНО: Безопасные генераторы списков
-                top_speed = max() if nodes else 0.0
+                # ИСПРАВЛЕНО: Аргументы для max
+                top_speed = max([n.speed for n in nodes]) if nodes else 0.0
                 count = len(nodes)
                 now = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
                 public_url = CONFIG.app.get('public_url', '')
@@ -61,37 +61,28 @@ class Exporter:
                           .replace("{{SUB_LINK}}", f"{public_url}/sub") \
                           .replace("<title>SunnyAreral Config</title>", "<title>SunnyAreral | SUB</title>")
                           
-                with open("index.html", "w", encoding="utf-8") as f: 
+                with open("index.html", "w", encoding="utf-8") as f:
                     f.write(html)
-                logger.success("📁 Файлы сохранены (Без мета-тегов в Base64)")
-            except Exception as e: 
+                logger.success("📁 Файлы сохранены")
+            except Exception as e:
                 logger.error(f"HTML Error: {e}")
-        else: 
-            logger.warning("⚠️ Шаблон не найден.")
 
     @staticmethod
-    async def send_telegram_report(total_parsed: int, alive_nodes: List, error_stats: dict, duration: float):
-        if not CONFIG.TG_BOT_TOKEN or not CONFIG.TG_CHAT_ID: 
-            return
+    async def send_telegram_report(total_parsed: int, alive_nodes: List[ProxyNode], duration: float):
+        if not CONFIG.TG_BOT_TOKEN or not CONFIG.TG_CHAT_ID: return
 
-        # ИСПРАВЛЕНО: Безопасные генераторы
-        top_speed = max() if alive_nodes else 0.0
-        avg_speed = (sum() / len(alive_nodes)) if alive_nodes else 0.0
+        # ИСПРАВЛЕНО: Аргументы для max и sum
+        top_speed = max([n.speed for n in alive_nodes]) if alive_nodes else 0.0
+        avg_speed = (sum([n.speed for n in alive_nodes]) / len(alive_nodes)) if alive_nodes else 0.0
         public_url = CONFIG.app.get('public_url', '')
         
-        # ИСПРАВЛЕНО: Красивый парсинг словаря ошибок
-        err_str = "\n".join()
-        if not err_str: 
-            err_str = "  • Ошибок нет"
-        
         msg = (
-            f"📊 <b>System Report v11:</b>\n\n"
+            f"📊 <b>System Report:</b>\n\n"
             f"🔍 Parsed: {total_parsed}\n"
             f"✅ Alive: {len(alive_nodes)}\n"
             f"⚡️ Top Speed: {top_speed:.1f} Mbps\n"
             f"📈 Avg Speed: {avg_speed:.1f} Mbps\n"
             f"⏱️ Duration: {duration:.1f}s\n\n"
-            f"🛠 <b>Telemetry:</b>\n{err_str}\n\n"
             f"🔗 <a href='{public_url}'>Status Page</a>"
         )
         
@@ -102,12 +93,8 @@ class Exporter:
             "parse_mode": "HTML",
             "disable_web_page_preview": True
         }
-        
-        if CONFIG.TG_TOPIC_ID: 
-            payload = CONFIG.TG_TOPIC_ID
+        if CONFIG.TG_TOPIC_ID: payload["message_thread_id"] = CONFIG.TG_TOPIC_ID
             
         async with aiohttp.ClientSession() as session:
-            try: 
-                await session.post(url, json=payload)
-            except Exception as e: 
-                logger.error(f"Telegram report error: {e}")
+            try: await session.post(url, json=payload)
+            except: pass
