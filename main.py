@@ -10,7 +10,7 @@ from core.exporter import Exporter
 
 async def main():
     start_time = time.perf_counter()
-    logger.info(f"🚀 Запуск SunnyAreral Enterprise v11 [Batch Mode]")
+    logger.info(f"🚀 Запуск SunnyAreral Enterprise v11")
 
     # 1. PARSING
     parser = LinkParser()
@@ -24,22 +24,16 @@ async def main():
     inspector = Inspector()
     logger.info("🔬 Начинаем пакетную проверку (Batch Engine)...")
     
-    # ВЫЗОВ НОВОГО МЕТОДА
     alive_nodes = await inspector.process_all(nodes)
     
     logger.success(f"🏁 Проверка завершена. Живых узлов: {len(alive_nodes)}")
 
     # 3. CHAMPION TEST
     if alive_nodes:
-        # Сортируем, берем первого кандидата
         alive_nodes.sort(key=lambda x: x.speed, reverse=True)
-        champion = alive_nodes[0]
+        champion = alive_nodes
         
-        # Перепроверяем на тяжелом файле
         logger.info(f"🏆 Финал: тестируем чемпиона {champion.config.server}...")
-        # Меняем URL теста временно (хак для батч-движка) или используем логику
-        # В данном случае просто берем текущую скорость, так как батч-тест уже достаточно точен
-        # Но для красоты можно перепроверить:
         new_speed = await inspector.champion_run(champion)
         if new_speed > 0:
             champion.speed = new_speed
@@ -60,6 +54,13 @@ async def main():
 if __name__ == "__main__":
     if sys.platform == 'win32':
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    else:
+        try:
+            import uvloop
+            uvloop.install()
+            logger.info("⚡ uvloop активирован для максимальной скорости")
+        except ImportError:
+            pass
     
     try:
         asyncio.run(main())
