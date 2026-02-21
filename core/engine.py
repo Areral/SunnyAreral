@@ -4,7 +4,7 @@ import os
 import subprocess
 import time
 import signal
-import random
+import uuid
 import aiohttp
 from aiohttp_socks import ProxyConnector
 from loguru import logger
@@ -13,16 +13,18 @@ from typing import List, Optional
 from core.models import ProxyNode
 from core.settings import CONFIG
 
+
 class BatchEngine:
     BASE_PORT = 10000
 
-    # Пул API для ротации
-    GEO_APIS = [
-        ("https://ipwho.is/", "country_code"),
-        ("http://ip-api.com/json/", "countryCode"),
-        ("https://api.country.is/", "country"),
-        ("https://ipinfo.io/json", "country") 
-    ]
+    @staticmethod
+    def _is_valid_uuid(val: str) -> bool:
+        """Строгая проверка UUID для предотвращения падения Sing-box"""
+        try:
+            uuid.UUID(str(val))
+            return True
+        except ValueError:
+            return False
 
     @staticmethod
     def _generate_batch_config(nodes: List[ProxyNode]) -> dict:
@@ -31,8 +33,14 @@ class BatchEngine:
         rules = []
         
         for i, node in enumerate(nodes):
-            local_port = BatchEngine.BASE_PORT + i
             tag = f"proxy-{i}"
+            
+            # Строгая пре-валидация узла
+            outbound = BatchEngine._node_to_outbound(node, tag)
+            if not outbound:
+                continue
+                
+            local_port = BatchEngine.BASE_PORT + i
             
             inbounds.append({
                 "type": "socks",
@@ -41,9 +49,7 @@ class BatchEngine:
                 "listen_port": local_port
             })
             
-            outbound = BatchEngine._node_to_outbound(node, tag)
             outbounds.append(outbound)
-            
             rules.append({
                 "inbound": [f"in-{i}"],
                 "outbound": tag
@@ -52,7 +58,7 @@ class BatchEngine:
         outbounds.append({"type": "direct", "tag": "direct"})
         
         return {
-            "log": {"level": "panic", "output": "discard"},
+            "log": {"level": "error", "output": "discard"},
             "dns": {
                 "servers": [
                     {"tag": "remote", "address": "1.1.1.1", "detour": "direct"}
@@ -68,42 +74,51 @@ class BatchEngine:
         }
 
     @staticmethod
-    def _node_to_outbound(node: ProxyNode, tag: str) -> dict:
+    def _node_to_outbound(node: ProxyNode, tag: str) -> Optional[dict]:
+        """Конвертер модели. Возвращает None, если конфиг содержит критический мусор."""
         c = node.config
         base = {"tag": tag, "server": c.server, "server_port": c.port}
         
-        # Protocol specifics
-        if node.protocol == "vless":
-            base.update({"type": "vless", "uuid": c.uuid, "flow": c.flow or "", "packet_encoding": "xudp"})
-        elif node.protocol == "vmess":
-            base.update({"type": "vmess", "uuid": c.uuid, "security": "auto", "packet_encoding": "xudp"})
-        elif node.protocol == "trojan":
-            base.update({"type": "trojan", "password": c.password})
-        elif node.protocol == "ss":
-            base.update({"type": "shadowsocks", "method": c.method, "password": c.password})
-            
-        # Transport
-        if c.type == "ws":
-            base["transport"] = {"type": "ws", "path": c.path, "headers": {"Host": c.host}}
-        elif c.type == "grpc":
-            base["transport"] = {"type": "grpc", "service_name": c.service_name}
-        elif c.type in ["xhttp", "httpupgrade"]:
-            base["transport"] = {"type": "httpupgrade", "path": c.path or "/", "host": c.host or ""}
-            
-        # TLS / Reality
-        if c.security in ["tls", "reality", "auto"]:
-            tls = {
-                "enabled": True, 
-                "server_name": c.sni or c.host or c.server,
-                "utls": {"enabled": True, "fingerprint": c.fp or "chrome"}
-            }
-            if c.security == "reality":
-                tls["reality"] = {"enabled": True, "public_key": c.pbk, "short_id": c.sid or ""}
-                if c.spx and c.spx != "/": 
-                    tls["reality"]["spider_x"] = c.spx
-            base["tls"] = tls
-            
-        return base
+        try:
+            if node.protocol == "vless":
+                if not c.uuid or not BatchEngine._is_valid_uuid(c.uuid): return None
+                base.update({"type": "vless", "uuid": c.uuid, "packet_encoding": "xudp"})
+                if c.flow: base["flow"] = c.flow
+            elif node.protocol == "vmess":
+                if not c.uuid or not BatchEngine._is_valid_uuid(c.uuid): return None
+                base.update({"type": "vmess", "uuid": c.uuid, "security": "auto", "packet_encoding": "xudp"})
+            elif node.protocol == "trojan":
+                if not c.password: return None
+                base.update({"type": "trojan", "password": c.password})
+            elif node.protocol == "ss":
+                if not c.method or not c.password: return None
+                base.update({"type": "shadowsocks", "method": c.method, "password": c.password})
+                
+            if c.type == "ws":
+                base["transport"] = {"type": "ws", "path": c.path or "/"}
+                if c.host: base["transport"]["headers"] = {"Host": c.host}
+            elif c.type == "grpc":
+                base["transport"] = {"type": "grpc", "service_name": c.service_name or ""}
+            elif c.type in ["xhttp", "httpupgrade"]:
+                base["transport"] = {"type": "httpupgrade", "path": c.path or "/"}
+                if c.host: base["transport"]["host"] = c.host
+                
+            if c.security in ["tls", "reality", "auto"]:
+                tls = {
+                    "enabled": True, 
+                    "server_name": c.sni or c.host or c.server,
+                    "utls": {"enabled": True, "fingerprint": c.fp or "chrome"}
+                }
+                if c.security == "reality":
+                    if not c.pbk: return None
+                    tls["reality"] = {"enabled": True, "public_key": c.pbk}
+                    if c.sid: tls["reality"]["short_id"] = c.sid
+                    if c.spx and c.spx != "/": tls["reality"]["spider_x"] = c.spx
+                base["tls"] = tls
+                
+            return base
+        except Exception:
+            return None
 
     async def check_batch(self, nodes: List[ProxyNode], is_champion: bool = False) -> List[ProxyNode]:
         if not nodes: return []
@@ -114,24 +129,34 @@ class BatchEngine:
         
         proc = None
         try:
+            config_data = self._generate_batch_config(nodes)
+            
+            # Если после фильтрации мусора не осталось валидных прокси, пропускаем запуск ядра
+            if len(config_data["outbounds"]) <= 1: 
+                return []
+
             with open(config_path, "w") as f:
-                json.dump(self._generate_batch_config(nodes), f)
+                json.dump(config_data, f)
             
             proc = subprocess.Popen(
                 ["sing-box", "run", "-c", config_path],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                preexec_fn=os.setsid
+                stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                preexec_fn=os.setsid,
+                text=True
             )
             await asyncio.sleep(2.5)
             
             if proc.poll() is not None:
-                logger.error("Sing-box batch process died immediately!")
+                _, stderr = proc.communicate()
+                logger.error(f"Sing-box crashed! Reason: {stderr.strip()[:250]}")
                 return []
 
             tasks = []
             for i, node in enumerate(nodes):
-                port = self.BASE_PORT + i
-                tasks.append(self._http_check(node, port, is_champion))
+                # Проверяем только те узлы, которые прошли пре-валидацию
+                if any(ob["tag"] == f"proxy-{i}" for ob in config_data["outbounds"]):
+                    port = self.BASE_PORT + i
+                    tasks.append(self._http_check(node, port, is_champion))
             
             results = await asyncio.gather(*tasks)
             alive_nodes = [n for n in results if n is not None]
@@ -157,13 +182,13 @@ class BatchEngine:
         
         try:
             async with aiohttp.ClientSession(connector=connector, timeout=timeout, headers=headers) as session:
-                # 1. Latency
+                # 1. Latency Test
                 t0 = time.perf_counter()
                 async with session.get("http://www.gstatic.com/generate_204", allow_redirects=False) as resp:
                     if resp.status != 204: raise Exception(f"Status {resp.status}")
                     node.latency = int((time.perf_counter() - t0) * 1000)
 
-                # 2. Speed
+                # 2. Speed Test
                 if is_champion:
                     url = CONFIG.checking.get('champion_test_url', "http://speed.cloudflare.com/__down?bytes=25000000")
                 else:
@@ -184,17 +209,24 @@ class BatchEngine:
                     if speed > 3000: speed = 0 
                     node.speed = round(speed, 1)
 
-                # 3. Geo-API Rotation
-                api_url, cc_key = random.choice(self.GEO_APIS)
+                # 3. Geo-Location (Cloudflare Trace -> 100% Accuracy)
                 try:
-                    async with session.get(api_url, timeout=5) as geo:
+                    async with session.get("http://cp.cloudflare.com/cdn-cgi/trace", timeout=4) as geo:
                         if geo.status == 200:
-                            data = await geo.json(content_type=None)
-                            cc = data.get(cc_key)
-                            if cc and isinstance(cc, str) and len(cc) == 2:
-                                node.country = cc.upper()
+                            text = await geo.text()
+                            for line in text.splitlines():
+                                if line.startswith("loc="):
+                                    node.country = line.split("=")[1].upper()
+                                    break
                 except Exception:
-                    pass
+                    # Fallback on failure
+                    try:
+                        async with session.get("http://ip-api.com/json/", timeout=4) as geo_fallback:
+                            if geo_fallback.status == 200:
+                                data = await geo_fallback.json()
+                                node.country = data.get("countryCode", "UN").upper()
+                    except:
+                        pass
 
                 if node.speed >= CONFIG.checking.get('min_speed', 2.0):
                     return node
@@ -202,6 +234,7 @@ class BatchEngine:
         except Exception:
             return None
         return None
+
 
 class Inspector:
     def __init__(self):
