@@ -16,7 +16,6 @@ from core.settings import CONFIG
 class BatchEngine:
     BASE_PORT = 10000
 
-    # Пул API для ротации (Cloudflare используется как основной)
     GEO_APIS = [
         ("https://ipwho.is/", "country_code"),
         ("http://ip-api.com/json/", "countryCode"),
@@ -24,7 +23,6 @@ class BatchEngine:
         ("https://ipinfo.io/json", "country") 
     ]
 
-    # Современные шифры, которые поддерживает Sing-box (старые вызывают краш)
     SUPPORTED_SS_CIPHERS = [
         "aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305", 
         "xchacha20-ietf-poly1305", "2022-blake3-aes-128-gcm", 
@@ -33,7 +31,6 @@ class BatchEngine:
 
     @staticmethod
     def _is_valid_uuid(val: str) -> bool:
-        """Строгая проверка UUID для предотвращения падения Sing-box"""
         try:
             uuid.UUID(str(val))
             return True
@@ -48,8 +45,6 @@ class BatchEngine:
         
         for i, node in enumerate(nodes):
             tag = f"proxy-{i}"
-            
-            # Строгая пре-валидация узла
             outbound = BatchEngine._node_to_outbound(node, tag)
             if not outbound:
                 continue
@@ -74,10 +69,7 @@ class BatchEngine:
         return {
             "log": {"level": "error", "output": "discard"},
             "dns": {
-                # Обновленный формат DNS для Sing-box 1.12+ (без detour)
-                "servers": [
-                    {"tag": "remote", "address": "8.8.8.8"}
-                ],
+                "servers": [{"tag": "remote", "address": "8.8.8.8"}],
                 "independent_cache": True
             },
             "inbounds": inbounds,
@@ -90,7 +82,6 @@ class BatchEngine:
 
     @staticmethod
     def _node_to_outbound(node: ProxyNode, tag: str) -> Optional[dict]:
-        """Конвертер модели. Возвращает None, если конфиг содержит критический мусор."""
         c = node.config
         base = {"tag": tag, "server": c.server, "server_port": c.port}
         
@@ -107,10 +98,23 @@ class BatchEngine:
                 base.update({"type": "trojan", "password": c.password.strip()})
             elif node.protocol == "ss":
                 if not c.method or not c.password: return None
-                # Жесткий фильтр шифров SS: пропускаем только современные AEAD
                 if c.method.lower() not in BatchEngine.SUPPORTED_SS_CIPHERS: return None
                 base.update({"type": "shadowsocks", "method": c.method.lower(), "password": c.password.strip()})
+            elif node.protocol == "hysteria2":
+                if not c.password: return None
+                base.update({"type": "hysteria2", "password": c.password.strip()})
+                if c.obfs and c.obfs_password:
+                    base["obfs"] = {"type": c.obfs.strip(), "password": c.obfs_password.strip()}
                 
+                # Hysteria2 требует свой блок TLS
+                base["tls"] = {
+                    "enabled": True,
+                    "server_name": c.sni or c.host or c.server,
+                    "insecure": c.insecure
+                }
+                return base # Возвращаем сразу, так как Transport ему не нужен
+
+            # Transport (для всех кроме Hysteria2)
             if c.type == "ws":
                 base["transport"] = {"type": "ws", "path": c.path or "/"}
                 if c.host: base["transport"]["headers"] = {"Host": c.host.strip()}
@@ -120,6 +124,7 @@ class BatchEngine:
                 base["transport"] = {"type": "httpupgrade", "path": c.path or "/"}
                 if c.host: base["transport"]["host"] = c.host.strip()
                 
+            # TLS / Reality (для всех кроме Hysteria2)
             if c.security in ["tls", "reality", "auto"]:
                 tls = {
                     "enabled": True, 
@@ -148,7 +153,6 @@ class BatchEngine:
         try:
             config_data = self._generate_batch_config(nodes)
             
-            # Если после фильтрации мусора не осталось валидных прокси
             if len(config_data["outbounds"]) <= 1: 
                 return []
 
@@ -166,7 +170,6 @@ class BatchEngine:
             if proc.poll() is not None:
                 _, stderr = proc.communicate()
                 error_msg = stderr.strip()
-                # Берем последние 500 символов, чтобы точно увидеть FATAL ошибку
                 if len(error_msg) > 500:
                     error_msg = "..." + error_msg[-500:]
                 logger.error(f"Sing-box crashed! Reason: {error_msg}")
@@ -202,13 +205,11 @@ class BatchEngine:
         
         try:
             async with aiohttp.ClientSession(connector=connector, timeout=timeout, headers=headers) as session:
-                # 1. Latency Test
                 t0 = time.perf_counter()
                 async with session.get("http://www.gstatic.com/generate_204", allow_redirects=False) as resp:
                     if resp.status != 204: raise Exception(f"Status {resp.status}")
                     node.latency = int((time.perf_counter() - t0) * 1000)
 
-                # 2. Speed Test
                 if is_champion:
                     url = CONFIG.checking.get('champion_test_url', "http://speed.cloudflare.com/__down?bytes=25000000")
                 else:
@@ -229,7 +230,6 @@ class BatchEngine:
                     if speed > 3000: speed = 0 
                     node.speed = round(speed, 1)
 
-                # 3. Geo-Location (Cloudflare Trace)
                 try:
                     async with session.get("http://cp.cloudflare.com/cdn-cgi/trace", timeout=4) as geo:
                         if geo.status == 200:
@@ -253,7 +253,6 @@ class BatchEngine:
         except Exception:
             return None
         return None
-
 
 class Inspector:
     def __init__(self):
