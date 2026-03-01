@@ -15,225 +15,240 @@
 </head>
 <body>
 
+    <!-- БОКОВАЯ НАВИГАЦИЯ -->
+    <nav class="side-nav">
+        <button class="nav-btn active" data-target="home">
+            <span class="nav-label">Nexus</span>
+            <div class="nav-dot"></div>
+        </button>
+        <button class="nav-btn" data-target="about">
+            <span class="nav-label">О проекте</span>
+            <div class="nav-dot"></div>
+        </button>
+        <button class="nav-btn" data-target="guide">
+            <span class="nav-label">Гайд</span>
+            <div class="nav-dot"></div>
+        </button>
+        <button class="nav-btn" data-target="knowledge">
+            <span class="nav-label">Архив</span>
+            <div class="nav-dot"></div>
+        </button>
+        <button class="nav-btn" data-target="legal">
+            <span class="nav-label">Протоколы</span>
+            <div class="nav-dot"></div>
+        </button>
+    </nav>
+
     <div class="container">
         
-        <!-- HERO SECTION -->
-        <div class="hero">
-            <div class="status-badge"><div class="dot"></div> Hakurei Barrier: Active</div>
-            <h1>SunnyAreral <span>Network</span></h1>
-            <p>
-                Продвинутая система обхода сетевых барьеров Neo-Gensokyo Protocol. 
-                Мы собираем, тестируем и верифицируем лучшие конфигурации связи, 
-                чтобы ваш доступ в интернет оставался бесперебойным.
-            </p>
-            <button class="btn-primary" onclick="openModal('rules-modal')">
-                <i class="fa-solid fa-key"></i> Получить доступ
-            </button>
-        </div>
-
-        <!-- DASHBOARD & QUICK INFO -->
-        <div class="grid-layout">
-            <div class="glass-card dashboard">
-                <div class="stat-panel">
-                    <div class="stat-title"><i class="fa-solid fa-gauge-high"></i> Max Speed</div>
-                    <div class="stat-value text-touhou">{{MAX_SPEED}}<span>Mbps</span></div>
-                </div>
-                <div class="stat-panel">
-                    <div class="stat-title"><i class="fa-solid fa-server"></i> Active Nodes</div>
-                    <div class="stat-value">{{PROXY_COUNT}}<span>UP</span></div>
-                </div>
-                
-                <div class="sys-log">
-                    <div class="line">> last_sync: <span>{{UPDATE_TIME}} MSK</span></div>
-                    <div class="line">> protocols: <span>VLESS, VMESS, TROJAN, SS, HY2</span></div>
-                    <div class="line">> obfuscation: <span class="magic">REALITY_ACTIVE</span></div>
-                </div>
-
-                <a href="https://t.me/SunnyAreral" target="_blank" class="btn-secondary" style="margin-top: 10px;">
-                    <i class="fa-brands fa-telegram"></i> Telegram Форум
-                </a>
+        <!-- HERO & DASHBOARD SECTION -->
+        <section id="home">
+            <div class="hero reveal active">
+                <div class="status-badge"><div class="dot"></div> Hakurei Barrier: Active</div>
+                <h1>SunnyAreral <span>Network</span></h1>
+                <p>
+                    Продвинутая система обхода сетевых барьеров Neo-Gensokyo Protocol. 
+                    Мы собираем, тестируем и верифицируем лучшие конфигурации связи, 
+                    чтобы ваш доступ в интернет оставался бесперебойным.
+                </p>
+                <button class="btn-primary" onclick="openModal('rules-modal')">
+                    <i class="fa-solid fa-key"></i> Получить доступ
+                </button>
             </div>
 
-            <div class="glass-card">
-                <h2 style="margin-bottom: 20px; font-size: 1.3rem;">Руководство по настройке</h2>
-                <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">Выберите вашу платформу, установите рекомендованный клиент и следуйте инструкциям для активации подписки.</p>
-                
-                <div class="tabs">
-                    <button class="tab-btn" id="tab-windows" onclick="switchPlatform('windows')"><i class="fa-brands fa-windows"></i> Windows</button>
-                    <button class="tab-btn" id="tab-android" onclick="switchPlatform('android')"><i class="fa-brands fa-android"></i> Android</button>
-                    <button class="tab-btn" id="tab-ios" onclick="switchPlatform('ios')"><i class="fa-brands fa-apple"></i> iOS/Mac</button>
-                    <button class="tab-btn" id="tab-linux" onclick="switchPlatform('linux')"><i class="fa-brands fa-linux"></i> Linux</button>
-                </div>
-
-                <div class="instruction-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="font-size: 1rem;">1. Выбор клиента</h3>
+            <div class="grid-layout reveal">
+                <div class="glass-card dashboard">
+                    <div class="stat-panel">
+                        <div class="stat-title"><i class="fa-solid fa-gauge-high"></i> Max Speed</div>
+                        <div class="stat-value text-touhou">{{MAX_SPEED}}<span>Mbps</span></div>
+                    </div>
+                    <div class="stat-panel">
+                        <div class="stat-title"><i class="fa-solid fa-server"></i> Active Nodes</div>
+                        <div class="stat-value">{{PROXY_COUNT}}<span>UP</span></div>
                     </div>
                     
-                    <div class="app-grid" id="app-grid"></div>
-                    
-                    <a href="#" target="_blank" id="download-btn" class="btn-secondary" style="width: 100%; border-color: var(--border-light);">
-                        <span><i class="fa-solid fa-download" style="margin-right: 8px; color: var(--touhou-sakura)"></i> Скачать <b id="app-name-display">App</b></span> 
-                    </a>
+                    <div class="sys-log">
+                        <div class="line">> last_sync: <span>{{UPDATE_TIME}} MSK</span></div>
+                        <div class="line">> protocols: <span>VLESS, VMESS, TROJAN, SS, HY2</span></div>
+                        <div class="line">> obfuscation: <span class="magic">REALITY_ACTIVE</span></div>
+                    </div>
 
-                    <h3 style="font-size: 1rem; margin-top: 30px;">2. Импорт и запуск</h3>
-                    <div id="instruction-text"></div>
+                    <a href="https://t.me/SunnyAreral" target="_blank" class="btn-secondary" style="margin-top: 10px;">
+                        <i class="fa-brands fa-telegram"></i> Telegram Форум
+                    </a>
+                </div>
+
+                <div class="glass-card">
+                    <h2 style="margin-bottom: 20px; font-size: 1.3rem;">Руководство по настройке</h2>
+                    <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">Выберите вашу платформу, установите рекомендованный клиент и следуйте инструкциям для активации подписки.</p>
+                    
+                    <div class="tabs">
+                        <button class="tab-btn" id="tab-windows" onclick="switchPlatform('windows')"><i class="fa-brands fa-windows"></i> Windows</button>
+                        <button class="tab-btn" id="tab-android" onclick="switchPlatform('android')"><i class="fa-brands fa-android"></i> Android</button>
+                        <button class="tab-btn" id="tab-androidtv" onclick="switchPlatform('androidtv')"><i class="fa-solid fa-tv"></i> TV</button>
+                        <button class="tab-btn" id="tab-ios" onclick="switchPlatform('ios')"><i class="fa-brands fa-apple"></i> iOS</button>
+                        <button class="tab-btn" id="tab-mac" onclick="switchPlatform('mac')"><i class="fa-solid fa-laptop"></i> Mac</button>
+                        <button class="tab-btn" id="tab-linux" onclick="switchPlatform('linux')"><i class="fa-brands fa-linux"></i> Linux</button>
+                    </div>
+
+                    <div class="instruction-box">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="font-size: 1rem;">1. Выбор клиента</h3>
+                        </div>
+                        <div class="app-grid" id="app-grid"></div>
+                        <a href="#" target="_blank" id="download-btn" class="btn-secondary" style="width: 100%; border-color: var(--border-light);">
+                            <span><i class="fa-solid fa-download" style="margin-right: 8px; color: var(--touhou-sakura)"></i> Скачать <b id="app-name-display">App</b></span> 
+                        </a>
+
+                        <h3 style="font-size: 1rem; margin-top: 30px;">2. Импорт и запуск</h3>
+                        <div id="instruction-text"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- FULL PAGE SCROLL SECTIONS -->
-        
         <!-- О ПРОЕКТЕ -->
-        <section class="glass-card content-section">
-            <h2><i class="fa-solid fa-circle-info"></i> Описание проекта</h2>
-            <div class="text-block">
-                <p><b>SunnyAreral Network</b> — это независимая технологическая инициатива, созданная для обеспечения стабильного доступа к информации в условиях жесткой сетевой цензуры и работы систем глубокой фильтрации трафика (DPI/ТСПУ).</p>
-                
-                <p>Проект представляет собой автоматизированный агрегатор и верификатор публичных VPN-конфигураций. Мы не просто собираем ссылки, мы подвергаем их многоступенчатой проверке. Каждые несколько часов наш матричный движок сканирует десятки тысяч узлов (<code>VLESS</code>, <code>VMess</code>, <code>Trojan</code>, <code>Shadowsocks</code>, <code>Hysteria2</code>), отсеивая до 98% мусора, нерабочих серверов и "пустышек".</p>
-                
-                <p><b>Почему это важно сегодня?</b><br>
-                Классические протоколы (OpenVPN, WireGuard, L2TP) на территории РФ практически полностью блокируются по паттернам трафика. Платные и бесплатные сервисы на их базе становятся бесполезны. Наша коллекция фокусируется на современных методах обфускации (маскировки), таких как <code>VLESS Reality</code> и <code>XHTTP</code>, которые мимикрируют под обычный HTTPS-трафик, делая ваше соединение невидимым для провайдера.</p>
-                
-                <p>Весь процесс полностью прозрачен: скрипт проводит реальные тесты на доступность из разных точек, замеряет задержку и проверяет пропускную способность (загрузка 50MB чанков). В итоговые подписки попадают только те узлы, которые гарантированно "пробивают" барьеры и обеспечивают комфортную скорость.</p>
+        <section id="about" class="content-section reveal">
+            <div class="glass-card">
+                <h2><i class="fa-solid fa-circle-info"></i> Описание проекта</h2>
+                <div class="text-block">
+                    <p><b>SunnyAreral Network</b> — это независимая технологическая инициатива, созданная для обеспечения стабильного доступа к информации в условиях жесткой сетевой цензуры и работы систем глубокой фильтрации трафика (DPI/ТСПУ).</p>
+                    <p>Проект представляет собой автоматизированный агрегатор и верификатор публичных VPN-конфигураций. Мы не просто собираем ссылки, мы подвергаем их многоступенчатой проверке. Каждые несколько часов наш матричный движок сканирует десятки тысяч узлов (<code>VLESS</code>, <code>VMess</code>, <code>Trojan</code>, <code>Shadowsocks</code>, <code>Hysteria2</code>), отсеивая до 98% мусора, нерабочих серверов и "пустышек".</p>
+                    <p><b>Почему это важно сегодня?</b><br>
+                    Классические протоколы (OpenVPN, WireGuard, L2TP) на территории РФ практически полностью блокируются по паттернам трафика. Платные и бесплатные сервисы на их базе становятся бесполезны. Наша коллекция фокусируется на современных методах обфускации (маскировки), таких как <code>VLESS Reality</code> и <code>XHTTP</code>, которые мимикрируют под обычный HTTPS-трафик, делая ваше соединение невидимым для провайдера.</p>
+                    <p>Весь процесс полностью прозрачен: скрипт проводит реальные тесты на доступность из разных точек, замеряет задержку и проверяет пропускную способность (загрузка 50MB чанков). В итоговые подписки попадают только те узлы, которые гарантированно "пробивают" барьеры и обеспечивают комфортную скорость.</p>
+                </div>
             </div>
         </section>
 
         <!-- КАК ПОЛЬЗОВАТЬСЯ -->
-        <section class="glass-card content-section">
-            <h2><i class="fa-solid fa-terminal"></i> Инструкция по эксплуатации</h2>
-            <div class="text-block">
-                <p><b>Шаг 1: Получение ссылки</b><br>
-                Нажмите кнопку <b>«Получить доступ»</b> в верхней части сайта. Выберите нужный тип подписки (БС — для обхода жестких блокировок, ЧС — для максимальной скорости в обычном режиме) и скопируйте ссылку. 
-                <br><i>Внимание: в клиент нужно вставлять именно URL-ссылку, а не копировать текст из файла.</i></p>
+        <section id="guide" class="content-section reveal">
+            <div class="glass-card">
+                <h2><i class="fa-solid fa-terminal"></i> Инструкция по эксплуатации</h2>
+                <div class="text-block">
+                    <p><b>Шаг 1: Получение ссылки</b><br>
+                    Нажмите кнопку <b>«Получить доступ»</b> в верхней части сайта. Выберите нужный тип подписки (БС — для обхода жестких блокировок, ЧС — для максимальной скорости в обычном режиме) и скопируйте ссылку. 
+                    <br><i>Внимание: в клиент нужно вставлять именно URL-ссылку, а не копировать текст из файла.</i></p>
 
-                <p><b>Шаг 2: Настройка автоматизации</b><br>
-                После добавления подписки в ваш клиент (v2rayNG, Throne, Nekobox и др.), перейдите в её настройки и <b>включите автообновление</b>. Публичные серверы крайне нестабильны и могут "жить" от нескольких часов до пары дней. Рекомендуемый интервал обновления — каждые 4-6 часов. Это гарантирует, что в вашем списке всегда будут только актуальные IP-адреса.</p>
+                    <p><b>Шаг 2: Настройка автоматизации</b><br>
+                    После добавления подписки в ваш клиент (v2rayNG, Throne, Nekobox и др.), перейдите в её настройки и <b>включите автообновление</b>. Публичные серверы крайне нестабильны и могут "жить" от нескольких часов до пары дней. Рекомендуемый интервал обновления — каждые 4-6 часов. Это гарантирует, что в вашем списке всегда будут только актуальные IP-адреса.</p>
 
-                <p><b>Шаг 3: Конфигурация безопасности</b><br>
-                В настройках большинства клиентов рекомендуется включить опцию <b>«Разрешить небезопасные / Allow Insecure»</b>. Многие рабочие серверы используют самоподписанные SSL-сертификаты. Без этой галочки клиент будет обрывать соединение в целях безопасности, и вы потеряете значительную часть доступных мощностей.</p>
+                    <p><b>Шаг 3: Конфигурация безопасности</b><br>
+                    В настройках большинства клиентов рекомендуется включить опцию <b>«Разрешить небезопасные / Allow Insecure»</b>. Многие рабочие серверы используют самоподписанные SSL-сертификаты. Без этой галочки клиент будет обрывать соединение в целях безопасности, и вы потеряете значительную часть доступных мощностей.</p>
 
-                <p><b>Шаг 4: Выбор оптимального узла</b><br>
-                Главный инструмент пользователя — <b>Тест реальной задержки</b> (Latency Test / URL Test). 
-                <blockquote>Не используйте обычный TCP или ICMP пинг — они показывают лишь отклик оборудования, но не работоспособность прокси-туннеля. Только тест задержки через HTTP-запрос (204/Google тест) покажет, проходит ли трафик через барьеры провайдера.</blockquote>
-                Отсортируйте список по результатам теста и выбирайте серверы с минимальным значением (зеленые цифры). Если один узел перестал работать — просто выберите следующий по списку.</p>
-                
-                <p><i>Важное замечание: на многих российских серверах из списка также доступны заблокированные ресурсы. Если ваша цель — только обход ограничений (например, YouTube), не обязательно подключаться к зарубежным узлам с высоким пингом.</i></p>
+                    <p><b>Шаг 4: Выбор оптимального узла</b><br>
+                    Главный инструмент пользователя — <b>Тест реальной задержки</b> (Latency Test / URL Test). 
+                    <blockquote>Не используйте обычный TCP или ICMP пинг — они показывают лишь отклик оборудования, но не работоспособность прокси-туннеля. Только тест задержки через HTTP-запрос (204/Google тест) покажет, проходит ли трафик через барьеры провайдера.</blockquote>
+                    Отсортируйте список по результатам теста и выбирайте серверы с минимальным значением (зеленые цифры). Если один узел перестал работать — просто выберите следующий по списку.</p>
+                    
+                    <p><i>Важное замечание: на многих российских серверах из списка также доступны заблокированные ресурсы. Если ваша цель — только обход ограничений (например, YouTube), не обязательно подключаться к зарубежным узлам с высоким пингом.</i></p>
+                </div>
             </div>
         </section>
 
-        <!-- БС vs ЧС -->
-        <section class="glass-card content-section">
-            <h2><i class="fa-solid fa-yin-yang" style="color: var(--touhou-red);"></i> Граница Фантазии: БС vs ЧС</h2>
-            <div class="text-block">
-                <p>Перед активацией выбранной спелл-карты (подписки) необходимо провести калибровку вашего канала. Откройте <i>Яндекс</i>, <i>ВК</i> или <i>Госуслуги</i>. Если эти порталы не отвечают — барьер между мирами закрыт полностью, у вас нет физического соединения, и никакой протокол здесь не поможет.</p>
-                
-                <p>Если же локальные ресурсы доступны, определите тип действующего на вас барьера и выберите соответствующий маршрут:</p>
-                
-                <table class="cyber-table">
-                    <tr>
-                        <th style="color: var(--touhou-sakura); border-bottom: 2px solid var(--touhou-sakura);">ЧЕРНЫЕ СПИСКИ (ЧС)</th>
-                        <th style="color: var(--touhou-purple); border-bottom: 2px solid var(--touhou-purple);">БЕЛЫЕ СПИСКИ (БС)</th>
-                    </tr>
-                    <tr>
-                        <td><b>Философия:</b> «Разрешено всё, что не запрещено». Вы находитесь в стандартной реальности.</td>
-                        <td><b>Философия:</b> «Запрещено всё, что не разрешено». Вы заперты за Барьером Хакурей.</td>
-                    </tr>
-                    <tr>
-                        <td><b>Состояние сети:</b> Кабельный интернет или мобильный без жестких "блэкаутов". Google, Telegram и App Store открываются без помощи извне.</td>
-                        <td><b>Состояние сети:</b> Тотальная изоляция на мобильных сетях. Доступны только утвержденные регулятором сайты (белый список).</td>
-                    </tr>
-                    <tr>
-                        <td><b>Целевые данные:</b> Максимальная скорость для тяжелого <i>Danmaku</i>-трафика: YouTube 4K, стриминг, Discord, социальные сети.</td>
-                        <td><b>Целевые данные:</b> Скрытое проникновение через "Gaps" (границы). Задача — доставить сообщение в мессенджере или прочитать почту.</td>
-                    </tr>
-                    <tr>
-                        <td><b>Рекомендуемые Спелл-карты:</b> <code>Hysteria2</code>, <code>Shadowsocks</code>, <code>VLESS</code>. Главный приоритет — чистая мощность.</td>
-                        <td><b>Рекомендуемые Спелл-карты:</b> Только <code>VLESS Reality</code>. Трафик полностью маскируется под легальные сервисы.</td>
-                    </tr>
-                </table>
-                
-                <blockquote>
-                    <i class="fa-solid fa-wand-magic-spark"></i> <b>Совет мудреца:</b> Не тратьте ресурсы Reality-узлов из «Обхода БС» для повседневного просмотра видео, если на вас не наложены жесткие ограничения. Берегите эти маршруты для тех, кто находится в зоне полной изоляции.
-                </blockquote>
+        <!-- БАЗА ЗНАНИЙ -->
+        <section id="knowledge" class="content-section">
+            
+            <div class="glass-card reveal mb-8">
+                <h2><i class="fa-solid fa-yin-yang" style="color: var(--touhou-red);"></i> Граница Фантазии: БС vs ЧС</h2>
+                <div class="text-block">
+                    <p>Перед активацией выбранной спелл-карты (подписки) необходимо провести калибровку вашего канала. Откройте <i>Яндекс</i>, <i>ВК</i> или <i>Госуслуги</i>. Если эти порталы не отвечают — барьер между мирами закрыт полностью, у вас нет физического соединения, и никакой протокол здесь не поможет.</p>
+                    <p>Если же локальные ресурсы доступны, определите тип действующего на вас барьера и выберите соответствующий маршрут:</p>
+                    
+                    <table class="cyber-table">
+                        <tr>
+                            <th style="color: var(--touhou-sakura); border-bottom: 2px solid var(--touhou-sakura);">ЧЕРНЫЕ СПИСКИ (ЧС)</th>
+                            <th style="color: var(--touhou-purple); border-bottom: 2px solid var(--touhou-purple);">БЕЛЫЕ СПИСКИ (БС)</th>
+                        </tr>
+                        <tr>
+                            <td><b>Философия:</b> «Разрешено всё, что не запрещено». Вы находитесь в стандартной реальности.</td>
+                            <td><b>Философия:</b> «Запрещено всё, что не разрешено». Вы заперты за Барьером Хакурей.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Состояние сети:</b> Кабельный интернет или мобильный без жестких "блэкаутов". Google, Telegram и App Store открываются без помощи извне.</td>
+                            <td><b>Состояние сети:</b> Тотальная изоляция на мобильных сетях. Доступны только утвержденные регулятором сайты (белый список).</td>
+                        </tr>
+                        <tr>
+                            <td><b>Целевые данные:</b> Максимальная скорость для тяжелого <i>Danmaku</i>-трафика: YouTube 4K, стриминг, Discord, социальные сети.</td>
+                            <td><b>Целевые данные:</b> Скрытое проникновение через "Gaps" (границы). Задача — доставить сообщение в мессенджере или прочитать почту.</td>
+                        </tr>
+                        <tr>
+                            <td><b>Рекомендуемые Спелл-карты:</b> <code>Hysteria2</code>, <code>Shadowsocks</code>, <code>VLESS</code>. Главный приоритет — чистая мощность.</td>
+                            <td><b>Рекомендуемые Спелл-карты:</b> Только <code>VLESS Reality</code>. Трафик полностью маскируется под легальные сервисы.</td>
+                        </tr>
+                    </table>
+                    
+                    <blockquote>
+                        <i class="fa-solid fa-wand-magic-spark"></i> <b>Совет мудреца:</b> Не тратьте ресурсы Reality-узлов из «Обхода БС» для повседневного просмотра видео, если на вас не наложены жесткие ограничения. Берегите эти маршруты для тех, кто находится в зоне полной изоляции.
+                    </blockquote>
+                </div>
             </div>
-        </section>
 
-        <!-- ПРОВАЙДЕРЫ И DOH -->
-        <section class="glass-card content-section">
-            <h2><i class="fa-solid fa-eye-slash" style="color: var(--touhou-purple);"></i> Иллюзия наблюдения: что видит провайдер?</h2>
-            <div class="text-block">
-                <p>Существует миф, что интернет-провайдер — это "всевидящее око", которое читает вашу переписку и видит каждое движение. В реальности, провайдер — это ленивый страж на границе миров. Благодаря повсеместному шифрованию <b>HTTPS</b> (TLS), ваше соединение защищено магическим барьером.</p>
-                
-                <p><b>Что провайдер видит на самом деле:</b></p>
-                <ul>
-                    <li><b>Конечный IP-адрес:</b> Он знает, к какому серверу вы летите, но не знает, зачем.</li>
-                    <li><b>Название домена (через SNI):</b> Из-за особенностей протоколов, при установке связи название сайта (например, <code>google.com</code>) передается открытым текстом. Это и позволяет "стражам" блокировать ресурсы по спискам.</li>
-                    <li><b>Объем и время трафика:</b> Он видит "вес" данных, но для него это просто шум (беспорядочное <i>даммаку</i> из байтов).</li>
-                </ul>
+            <div class="glass-card reveal">
+                <h2><i class="fa-solid fa-eye-slash" style="color: var(--touhou-purple);"></i> Иллюзия наблюдения: что видит провайдер?</h2>
+                <div class="text-block">
+                    <p>Существует миф, что интернет-провайдер — это "всевидящее око", которое читает вашу переписку и видит каждое движение. В реальности, провайдер — это ленивый страж на границе миров. Благодаря повсеместному шифрованию <b>HTTPS</b> (TLS), ваше соединение защищено магическим барьером.</p>
+                    
+                    <p><b>Что провайдер видит на самом деле:</b></p>
+                    <ul>
+                        <li><b>Конечный IP-адрес:</b> Он знает, к какому серверу вы летите, но не знает, зачем.</li>
+                        <li><b>Название домена (через SNI):</b> Из-за особенностей протоколов, при установке связи название сайта (например, <code>google.com</code>) передается открытым текстом. Это и позволяет "стражам" блокировать ресурсы по спискам.</li>
+                        <li><b>Объем и время трафика:</b> Он видит "вес" данных, но для него это просто шум (беспорядочное <i>даммаку</i> из байтов).</li>
+                    </ul>
 
-                <p><b>Чего он НЕ видит КАТЕГОРИЧЕСКИ:</b> Конкретные страницы, которые вы открываете внутри сайта, ваши поисковые запросы, сообщения в чатах или видео, которые вы смотрите. Для него всё это — зашифрованный черный ящик.</p>
+                    <p><b>Чего он НЕ видит КАТЕГОРИЧЕСКИ:</b> Конкретные страницы, которые вы открываете внутри сайта, ваши поисковые запросы, сообщения в чатах или видео, которые вы смотрите. Для него всё это — зашифрованный черный ящик.</p>
 
-                <p style="margin-top: 25px;"><b><i class="fa-solid fa-scroll"></i> Гримуар DNS-over-HTTPS (DoH)</b></p>
-                <p>Обычный DNS — это как открытая записка: "Я хочу пойти на <code>twitter.com</code>". Провайдер перехватывает её и говорит: "Тебе туда нельзя". <b>DoH</b> прячет эту записку внутрь стандартного HTTPS-запроса, делая ваш выбор домена невидимым для локального цензора.</p>
-                
-                <p><b>Проверенные серверы DoH для настройки в браузере или системе:</b></p>
-                <ul>
-                    <li><code>https://dns.quad9.net/dns-query</code> — <b>Quad9:</b> Максимальная приватность (Швейцария) + автоматическая фильтрация вредоносных узлов.</li>
-                    <li><code>https://dns.adguard-dns.com/dns-query</code> — <b>AdGuard:</b> Известный защитник, который на лету вырезает рекламные трекеры и шпионские скрипты.</li>
-                    <li><code>https://dns.cloudflare.com/dns-query</code> — <b>Cloudflare:</b> Самый быстрый и стабильный вариант, база для большинства современных сетей.</li>
-                </ul>
+                    <p style="margin-top: 25px;"><b><i class="fa-solid fa-scroll"></i> Гримуар DNS-over-HTTPS (DoH)</b></p>
+                    <p>Обычный DNS — это как открытая записка: "Я хочу пойти на <code>twitter.com</code>". Провайдер перехватывает её и говорит: "Тебе туда нельзя". <b>DoH</b> прячет эту записку внутрь стандартного HTTPS-запроса, делая ваш выбор домена невидимым для локального цензора.</p>
+                    
+                    <p><b>Проверенные серверы DoH для настройки в браузере или системе:</b></p>
+                    <ul>
+                        <li><code>https://dns.quad9.net/dns-query</code> — <b>Quad9:</b> Максимальная приватность (Швейцария) + автоматическая фильтрация вредоносных узлов.</li>
+                        <li><code>https://dns.adguard-dns.com/dns-query</code> — <b>AdGuard:</b> Известный защитник, который на лету вырезает рекламные трекеры и шпионские скрипты.</li>
+                        <li><code>https://dns.cloudflare.com/dns-query</code> — <b>Cloudflare:</b> Самый быстрый и стабильный вариант, база для большинства современных сетей.</li>
+                    </ul>
 
-                <p style="margin-top: 25px;"><b><i class="fa-solid fa-user-ninja"></i> Приватные браузеры: уход от телеметрии</b></p>
-                <p>Даже если ваш канал зашифрован, сам браузер может "сливать" информацию о вас (телеметрию) своим создателям. Чтобы оставаться призраком в сети, используйте инструменты с открытым кодом (Open-Source):</p>
-                <ol>
-                    <li><b>Librewolf</b> — Мощно кастомизированный Firefox. Из него вырезаны все модули слежки Mozilla, а блокировщик <i>uBlock Origin</i> встроен прямо в ядро.</li>
-                    <li><b>Ungoogled Chromium</b> — Тот же привычный Chrome, но из которого хирургическим путем удалили все связи с Google и модули сбора данных. Чистая архитектура.</li>
-                    <li><b>Cromite</b> — Обязательный артефакт для Android. Позволяет не только блокировать рекламу, но и скрывать "цифровой отпечаток" вашего устройства.</li>
-                </ol>
-                
-                <blockquote>
-                    <i class="fa-solid fa-circle-exclamation"></i> <b>Важно:</b> Никогда не используйте браузеры от крупных корпораций с сомнительной репутацией (особенно Yandex). Они являются прямым инструментом сбора данных и анализа вашего трафика.
-                </blockquote>
-            </div>
-        </section>
-
-        <!-- СОВЕТЫ -->
-        <section class="glass-card content-section">
-            <h2><i class="fa-solid fa-lightbulb"></i> Дополнительные советы</h2>
-            <div class="text-block">
-                <ul>
-                    <li><b>Включите Insecure:</b> В настройках вашего клиента (например, NekoBox) найдите опцию «Разрешить небезопасные / Allow Insecure» и включите её. Это увеличит количество доступных серверов, так как многие публичные узлы используют самоподписанные сертификаты.</li>
-                    <li><b>Пробуйте разные клиенты:</b> Если в v2rayN конфиги не заводятся, попробуйте Throne. У разных ядер (Xray, Sing-box) разная терпимость к старым протоколам.</li>
-                    <li><b>DNS не влияет на VPN:</b> Актуальная база формируется преимущественно из IP-адресов. Это исключает зависимость VPN-соединения от доступности вашего локального DNS.</li>
-                </ul>
+                    <p style="margin-top: 25px;"><b><i class="fa-solid fa-user-ninja"></i> Приватные браузеры: уход от телеметрии</b></p>
+                    <p>Даже если ваш канал зашифрован, сам браузер может "сливать" информацию о вас (телеметрию) своим создателям. Чтобы оставаться призраком в сети, используйте инструменты с открытым кодом (Open-Source):</p>
+                    <ol>
+                        <li><b>Librewolf</b> — Мощно кастомизированный Firefox. Из него вырезаны все модули слежки Mozilla, а блокировщик <i>uBlock Origin</i> встроен прямо в ядро.</li>
+                        <li><b>Ungoogled Chromium</b> — Тот же привычный Chrome, но из которого хирургическим путем удалили все связи с Google и модули сбора данных. Чистая архитектура.</li>
+                        <li><b>Cromite</b> — Обязательный артефакт для Android. Позволяет не только блокировать рекламу, но и скрывать "цифровой отпечаток" вашего устройства.</li>
+                    </ol>
+                    
+                    <blockquote>
+                        <i class="fa-solid fa-circle-exclamation"></i> <b>Важно:</b> Никогда не используйте браузеры от крупных корпораций с сомнительной репутацией (особенно Yandex). Они являются прямым инструментом сбора данных и анализа вашего трафика.
+                    </blockquote>
+                </div>
             </div>
         </section>
 
         <!-- ДИСКЛЕЙМЕР -->
-        <div class="disclaimer-block">
-            <b><i class="fa-solid fa-shield-virus"></i> ГРАНИЦА ОТВЕТСТВЕННОСТИ: ПРОТОКОЛ [NULL]</b>
-            
-            <p>1. <b>Информационный статус:</b> Данный ресурс является автоматизированным узлом агрегации метаданных. Владелец проекта НЕ является поставщиком, владельцем или оператором серверов, конфигурации которых представлены в списках. Все данные получены методом парсинга открытых публичных репозиториев и чатов. Мы лишь "Gap" (граница), через которую вы видите то, что уже существует в сети.</p>
-            
-            <p>2. <b>Научно-образовательный вектор:</b> Весь материал, включая инструкции по DoH и обфускации, предоставляется исключительно в исследовательских, ознакомительных и научных целях. Проект НЕ является рекламой VPN-сервисов или призывом к их использованию. Мы изучаем архитектуру сетевых барьеров, а не способы их нарушения.</p>
-            
-            <p>3. <b>Отказ от ответственности:</b> Автор не несет ответственности за любые последствия применения данных конфигураций. Мы не побуждаем, не одобряем и не оправдываем использование данных инструментов для совершения действий, противоречащих вашему локальному законодательству. Любая активация спелл-карты (подписки) — это ваш личный выбор и ваш риск.</p>
-            
-            <p>4. <b>Легитимное использование:</b> Мы настоятельно рекомендуем использовать данные инструменты исключительно для защиты персональных данных в открытых Wi-Fi сетях, обеспечения безопасности удаленного доступа и в рамках проведения этичного тестирования на проникновение (Penetration Testing).</p>
+        <section id="legal" class="content-section reveal">
+            <div class="disclaimer-block">
+                <b><i class="fa-solid fa-shield-virus"></i> ГРАНИЦА ОТВЕТСТВЕННОСТИ: ПРОТОКОЛ [NULL]</b>
+                
+                <p>1. <b>Информационный статус:</b> Данный ресурс является автоматизированным узлом агрегации метаданных. Владелец проекта НЕ является поставщиком, владельцем или оператором серверов, конфигурации которых представлены в списках. Все данные получены методом парсинга открытых публичных репозиториев и чатов. Мы лишь "Gap" (граница), через которую вы видите то, что уже существует в сети.</p>
+                
+                <p>2. <b>Научно-образовательный вектор:</b> Весь материал, включая инструкции по DoH и обфускации, предоставляется исключительно в исследовательских, ознакомительных и научных целях. Проект НЕ является рекламой VPN-сервисов или призывом к их использованию. Мы изучаем архитектуру сетевых барьеров, а не способы их нарушения.</p>
+                
+                <p>3. <b>Отказ от ответственности:</b> Автор не несет ответственности за любые последствия применения данных конфигураций. Мы не побуждаем, не одобряем и не оправдываем использование данных инструментов для совершения действий, противоречащих вашему локальному законодательству. Любая активация спелл-карты (подписки) — это ваш личный выбор и ваш риск.</p>
+                
+                <p>4. <b>Легитимное использование:</b> Мы настоятельно рекомендуем использовать данные инструменты исключительно для защиты персональных данных в открытых Wi-Fi сетях, обеспечения безопасности удаленного доступа и в рамках проведения этичного тестирования на проникновение (Penetration Testing).</p>
 
-            <blockquote>
-                <i class="fa-solid fa-gavel"></i> <b>Предупреждение:</b> Входя в этот поток данных, вы автоматически подтверждаете, что осознаете ответственность за свои действия. Если ваше восприятие реальности конфликтует с данными условиями — немедленно разорвите соединение.
-            </blockquote>
-        </div>
+                <blockquote>
+                    <i class="fa-solid fa-gavel"></i> <b>Предупреждение:</b> Входя в этот поток данных, вы автоматически подтверждаете, что осознаете ответственность за свои действия. Если ваше восприятие реальности конфликтует с данными условиями — немедленно разорвите соединение.
+                </blockquote>
+            </div>
+        </section>
 
-        <div class="footer">
+        <div class="footer reveal">
             Created by <a href="https://t.me/SunnyAreral" target="_blank">SunnyAreral Team</a> • 2026<br>
             <span style="font-size: 0.7rem; color: var(--border-light); margin-top: 5px; display: inline-block;">Powered by Neo-Gensokyo Routing Architecture</span>
         </div>
     </div>
 
-    <!-- MODAL 1: RULES -->
+    <!-- MODALS (RULES & CONFIGS) -->
     <div class="modal-overlay" id="rules-modal">
         <div class="modal">
             <div class="modal-header">
@@ -274,7 +289,6 @@
         </div>
     </div>
 
-    <!-- MODAL 2: CONFIGS -->
     <div class="modal-overlay" id="configs-modal">
         <div class="modal">
             <div class="modal-header">
@@ -287,7 +301,6 @@
                 </p>
 
                 <div class="sub-grid">
-                    <!-- Обход БС -->
                     <div class="sub-card reality" onclick="copySub('/sub1', 'Phantom Walk (БС)')">
                         <div class="sub-header">
                             <div class="sub-title"><i class="fa-solid fa-mask" style="color: #c4b5fd;"></i> Обход БС</div>
@@ -297,7 +310,6 @@
                         <div class="sub-tech">SPELLCARD: VLESS REALITY</div>
                     </div>
 
-                    <!-- Обход ЧС -->
                     <div class="sub-card fast" onclick="copySub('/sub2', 'Tengu Dash (ЧС)')">
                         <div class="sub-header">
                             <div class="sub-title"><i class="fa-solid fa-jet-fighter" style="color: #6ee7b7;"></i> Обход ЧС</div>
@@ -307,7 +319,6 @@
                         <div class="sub-tech">SPELLCARD: HYSTERIA2, SS, VMESS</div>
                     </div>
 
-                    <!-- MIX -->
                     <div class="sub-card mix" onclick="copySub('/sub', 'Master Spark (MIX)')">
                         <div class="sub-header">
                             <div class="sub-title"><i class="fa-solid fa-infinity" style="color: #fda4af;"></i> MIX База</div>
