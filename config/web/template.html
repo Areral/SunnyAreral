@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SunnyAreral | Cyber Proxy System</title>
+    <title>SunnyAreral | Neo-Gensokyo Protocol</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -17,9 +17,9 @@
 
     <div class="container">
         <div class="hero">
-            <div class="status-badge"><div class="dot"></div> System Online</div>
+            <div class="status-badge"><div class="dot"></div> Hakurei Barrier: Active</div>
             <h1>SunnyAreral <span>Network</span></h1>
-            <p>Продвинутая система обхода блокировок. Мы собираем, тестируем и фильтруем лучшие узлы, чтобы вы всегда оставались на связи.</p>
+            <p>Продвинутая система обхода блокировок (Neo-Gensokyo Routing Protocol). Мы собираем, тестируем и фильтруем лучшие спелл-карты, чтобы вы всегда оставались на связи.</p>
             <button class="btn-primary" onclick="openModal('rules-modal')">
                 <i class="fa-solid fa-key"></i> Получить доступ
             </button>
@@ -28,18 +28,18 @@
         <div class="grid-layout">
             <div class="glass-card dashboard">
                 <div class="stat-panel">
-                    <div class="stat-title"><i class="fa-solid fa-gauge-high"></i> Max Speed</div>
-                    <div class="stat-value text-accent">{{MAX_SPEED}}<span>Mbps</span></div>
+                    <div class="stat-title"><i class="fa-solid fa-gauge-high"></i> Danmaku Velocity</div>
+                    <div class="stat-value text-touhou">{{MAX_SPEED}}<span>Mbps</span></div>
                 </div>
                 <div class="stat-panel">
-                    <div class="stat-title"><i class="fa-solid fa-server"></i> Active Nodes</div>
+                    <div class="stat-title"><i class="fa-solid fa-server"></i> Spirit Link Nodes</div>
                     <div class="stat-value">{{PROXY_COUNT}}<span>UP</span></div>
                 </div>
                 
                 <div class="sys-log">
                     <div class="line">> last_sync: <span>{{UPDATE_TIME}} MSK</span></div>
                     <div class="line">> protocols: <span>VLESS, VMESS, TROJAN, SS, HY2</span></div>
-                    <div class="line">> obfuscation: <span class="active">ACTIVE</span></div>
+                    <div class="line">> obfuscation: <span class="magic">REALITY_ACTIVE</span></div>
                 </div>
 
                 <a href="https://t.me/SunnyAreral" target="_blank" class="btn-secondary" style="margin-top: 10px;">
@@ -49,71 +49,129 @@
 
             <div class="glass-card">
                 <h2 style="margin-bottom: 20px; font-size: 1.3rem;">Руководство по настройке</h2>
-                <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">Выберите вашу платформу, установите рекомендованный клиент и следуйте инструкциям.</p>
+                <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 24px;">Выберите вашу платформу, установите рекомендованный клиент и следуйте инструкциям для активации спелл-карты.</p>
                 
                 <div class="tabs">
                     <button class="tab-btn" id="tab-windows" onclick="switchPlatform('windows')"><i class="fa-brands fa-windows"></i> Windows</button>
                     <button class="tab-btn" id="tab-android" onclick="switchPlatform('android')"><i class="fa-brands fa-android"></i> Android</button>
-                    <button class="tab-btn" id="tab-ios" onclick="switchPlatform('ios')"><i class="fa-brands fa-apple"></i> iOS/macOS</button>
+                    <button class="tab-btn" id="tab-androidtv" onclick="switchPlatform('androidtv')"><i class="fa-solid fa-tv"></i> TV</button>
+                    <button class="tab-btn" id="tab-ios" onclick="switchPlatform('ios')"><i class="fa-brands fa-apple"></i> iOS</button>
+                    <button class="tab-btn" id="tab-mac" onclick="switchPlatform('mac')"><i class="fa-solid fa-laptop"></i> Mac</button>
                     <button class="tab-btn" id="tab-linux" onclick="switchPlatform('linux')"><i class="fa-brands fa-linux"></i> Linux</button>
                 </div>
 
                 <div class="instruction-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="font-size: 1rem;">1. Выбор клиента</h3>
+                        <h3 style="font-size: 1rem;">1. Выбор клиента (Artifact)</h3>
                     </div>
                     
                     <div class="app-grid" id="app-grid"></div>
                     
                     <a href="#" target="_blank" id="download-btn" class="btn-secondary" style="width: 100%; border-color: var(--border-light);">
-                        <span><i class="fa-solid fa-download" style="margin-right: 8px;"></i> Скачать <b id="app-name-display">App</b></span> 
+                        <span><i class="fa-solid fa-download" style="margin-right: 8px; color: var(--touhou-sakura)"></i> Скачать <b id="app-name-display">App</b></span> 
                     </a>
 
-                    <h3 style="font-size: 1rem; margin-top: 30px;">2. Импорт и запуск</h3>
+                    <h3 style="font-size: 1rem; margin-top: 30px;">2. Импорт и запуск (Invocation)</h3>
                     <div id="instruction-text"></div>
                 </div>
             </div>
         </div>
 
-        <div class="footer">Created by <a href="https://t.me/SunnyAreral" target="_blank">SunnyAreral Team</a> • 2026</div>
+        <!-- THE GRIMOIRE OF KNOWLEDGE (NEW SECTION) -->
+        <div class="glass-card" style="margin-top: 10px;">
+            <h2 style="font-size: 1.4rem; margin-bottom: 15px; color: #fff;"><i class="fa-solid fa-book-journal-whills" style="color: var(--touhou-purple);"></i> Гримуар знаний (Архив)</h2>
+            <p style="font-size: 0.9rem; color: var(--text-dim); margin-bottom: 20px;">Важная информация о сетевой безопасности, типах блокировок (ТСПУ) и приватности.</p>
+
+            <details>
+                <summary><i class="fa-solid fa-yin-yang"></i> В чем разница между Белым (БС) и Черным (ЧС) списками?</summary>
+                <div class="details-content">
+                    <p><b>ЧЕРНЫЕ СПИСКИ (ЧС) - Стандартный интернет:</b><br>
+                    Принцип «разрешено все, что не запрещено». У вас работает обычный интернет (кабельный или мобильный без жестких ограничений), открываются мировые сайты, но заблокированы определенные ресурсы (YouTube, Instagram, Discord).<br>
+                    <i>➔ Используйте подписку «Обход ЧС» (Danmaku Speed). Это быстрые серверы, рассчитанные на стриминг и тяжелый трафик.</i></p>
+
+                    <p style="margin-top: 15px;"><b>БЕЛЫЕ СПИСКИ (БС) - Максимальные ограничения:</b><br>
+                    Принцип «запрещено все, что не разрешено». Применяется во время жестких мобильных блокировок. Не работает ни Google, ни Telegram — открываются только сайты, утвержденные регулятором (Яндекс, Госуслуги, ВК, Сбербанк).<br>
+                    <i>➔ Используйте подписку «Обход БС» (Phantom Walk). Эти конфиги используют протокол <code>VLESS Reality</code> для мимикрии под разрешенные Российские сервисы, чтобы пробить барьер.</i></p>
+                </div>
+            </details>
+
+            <details>
+                <summary><i class="fa-solid fa-eye"></i> Что видит провайдер, когда вы в сети?</summary>
+                <div class="details-content">
+                    <p>Существует миф, что "провайдер всё видит". На самом деле, благодаря повсеместному внедрению HTTPS, провайдер видит только 3 вещи:</p>
+                    <ul>
+                        <li>Конечный IP-адрес сайта.</li>
+                        <li>Название домена (через незашифрованный SNI).</li>
+                        <li>Объем зашифрованных пакетов.</li>
+                    </ul>
+                    <p><b>Что он НЕ видит:</b> Какие именно страницы вы посещаете, что пишете в поиске, какие видео смотрите. Расшифровать HTTPS-трафик практически невозможно без подмены сертификата на вашем устройстве.</p>
+                    <blockquote>Чтобы повысить приватность и скрыть от провайдера даже домены сайтов, настройте DNS-over-HTTPS (DoH) на вашем устройстве или в браузере.</blockquote>
+                </div>
+            </details>
+
+            <details>
+                <summary><i class="fa-solid fa-user-secret"></i> Шифрование DNS (DoH) и приватные браузеры</summary>
+                <div class="details-content">
+                    <p><b>Что такое DoH?</b><br>
+                    Обычный DNS отправляет запросы открытым текстом. DNS-over-HTTPS (DoH) шифрует их, не позволяя локальному провайдеру видеть, к какому домену вы обращаетесь. Настроить его можно в параметрах системы или браузера.</p>
+                    
+                    <p><b>Публичные серверы DoH:</b></p>
+                    <ul>
+                        <li><code>https://dns.quad9.net/dns-query</code> (Quad9 — Швейцария, приватность + блокировка малвари)</li>
+                        <li><code>https://dns.adguard-dns.com/dns-query</code> (AdGuard — Блокировка рекламы)</li>
+                        <li><code>https://dns.cloudflare.com/dns-query</code> (Cloudflare — Базовый)</li>
+                    </ul>
+
+                    <p style="margin-top: 15px;"><b>Выбор браузера (Уход от телеметрии):</b><br>
+                    Многие публичные браузеры собирают статистику. Для максимальной конфиденциальности рассмотрите Open-Source решения:</p>
+                    <ol>
+                        <li><b>Librewolf</b> — кастомизированный Firefox с вырезанной телеметрией и встроенным uBlock Origin. Отлично подходит из коробки.</li>
+                        <li><b>Ungoogled Chromium</b> — классический Chromium без привязок к сервисам Google.</li>
+                        <li><b>Mozilla Firefox</b> — самый лояльный к приватности среди массовых браузеров (обязательно установите uBlock Origin).</li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <div class="footer">Created by <a href="https://t.me/SunnyAreral" target="_blank">SunnyAreral Team</a> • 2026<br><span style="font-size: 0.7rem; color: var(--border-light);">Powered by Neo-Gensokyo Routing Architecture</span></div>
     </div>
 
     <!-- MODAL 1: RULES -->
     <div class="modal-overlay" id="rules-modal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-shield-halved" style="color: var(--accent);"></i> Правила использования</div>
+                <div class="modal-title"><i class="fa-solid fa-shield-halved" style="color: var(--touhou-sakura);"></i> Условия использования</div>
                 <button class="btn-close" onclick="closeModal('rules-modal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px;">Пожалуйста, ознакомьтесь с правилами. Нарушение приведет к блокировке узлов провайдерами.</p>
+                <p style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px;">Ознакомьтесь с правилами сети. Нарушение приводит к бану серверов на магистралях (ТСПУ).</p>
                 
                 <div class="rule-list">
                     <div class="rule-item">
-                        <i class="fa-solid fa-ban rule-icon" style="color: var(--cyber-red);"></i>
+                        <i class="fa-solid fa-ban rule-icon" style="color: var(--touhou-red);"></i>
                         <div>
                             <h4>Строго без торрентов (P2P)</h4>
-                            <p>Скачивание торрентов через прокси моментально палит сервер и приводит к его бану у хостера. Уважайте чужой труд.</p>
+                            <p>Скачивание торрентов через прокси моментально палит сервер и приводит к его бану у хостера. Уважайте труд сообщества.</p>
                         </div>
                     </div>
                     <div class="rule-item">
                         <i class="fa-solid fa-building-columns rule-icon" style="color: var(--cyber-blue);"></i>
                         <div>
                             <h4>Банки и Гос. сервисы</h4>
-                            <p>Отключайте VPN при входе в банковские приложения. Банки могут временно заблокировать ваш аккаунт за вход с иностранного IP.</p>
+                            <p>Отключайте VPN при входе в банки. Алгоритмы безопасности могут временно заблокировать ваш аккаунт за вход с иностранного IP.</p>
                         </div>
                     </div>
                     <div class="rule-item">
                         <i class="fa-solid fa-rotate rule-icon" style="color: var(--cyber-green);"></i>
                         <div>
                             <h4>Автообновление</h4>
-                            <p>Конфиги обновляются каждые 4 часа. Настройте в клиенте автоматическое обновление подписки раз в 4-6 часов.</p>
+                            <p>Конфиги обновляются регулярно. Обязательно настройте в вашем клиенте автоматическое обновление подписки раз в 4-6 часов.</p>
                         </div>
                     </div>
                 </div>
                 
                 <button class="btn-primary" style="width: 100%; max-width: 100%;" onclick="acceptRules()">
-                    <i class="fa-solid fa-check"></i> Я принимаю условия
+                    <i class="fa-solid fa-check"></i> Активировать доступ
                 </button>
             </div>
         </div>
@@ -128,35 +186,38 @@
             </div>
             <div class="modal-body">
                 <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">
-                    Алгоритмы отсортировали трафик. Выберите ссылку и скопируйте её в буфер обмена:
+                    Трафик отсортирован и прошел валидацию. Выберите нужную ссылку:
                 </p>
 
                 <div class="sub-grid">
-                    <div class="sub-card reality" onclick="copySub('/sub1', 'Обход БС')">
+                    <!-- Обход БС -->
+                    <div class="sub-card reality" onclick="copySub('/sub1', 'Phantom Walk (БС)')">
                         <div class="sub-header">
-                            <div class="sub-title"><i class="fa-solid fa-mask" style="color: var(--cyber-purple);"></i> Обход БС</div>
-                            <div class="sub-badge badge-reality">Verified</div>
+                            <div class="sub-title"><i class="fa-solid fa-mask" style="color: #c4b5fd;"></i> Обход БС</div>
+                            <div class="sub-badge badge-reality">Phantom Walk</div>
                         </div>
-                        <div class="sub-desc">Трафик мимикрирует под легальные белые сайты (РКН). Максимальная маскировка и стабильность.</div>
-                        <div class="sub-tech">PROTO: VLESS REALITY</div>
+                        <div class="sub-desc">Обход жестких белых списков. Трафик мимикрирует под легальные сайты (РКН). Максимальная маскировка и пробитие.</div>
+                        <div class="sub-tech">SPELLCARD: VLESS REALITY</div>
                     </div>
 
-                    <div class="sub-card fast" onclick="copySub('/sub2', 'Обход ЧС')">
+                    <!-- Обход ЧС -->
+                    <div class="sub-card fast" onclick="copySub('/sub2', 'Tengu Dash (ЧС)')">
                         <div class="sub-header">
-                            <div class="sub-title"><i class="fa-solid fa-jet-fighter" style="color: var(--cyber-green);"></i> Обход ЧС</div>
-                            <div class="sub-badge badge-fast">Сверхскорость</div>
+                            <div class="sub-title"><i class="fa-solid fa-jet-fighter" style="color: #6ee7b7;"></i> Обход ЧС</div>
+                            <div class="sub-badge badge-fast">Tengu Dash</div>
                         </div>
-                        <div class="sub-desc">Сырая мощность поверх современных протоколов. Идеально для YouTube 4K, но без глубокой маскировки.</div>
-                        <div class="sub-tech">PROTO: HYSTERIA2, SS, VMESS</div>
+                        <div class="sub-desc">Для стандартного интернета. Сырая мощность современных протоколов. Идеально для YouTube 4K.</div>
+                        <div class="sub-tech">SPELLCARD: HYSTERIA2, SS, VMESS</div>
                     </div>
 
-                    <div class="sub-card mix" onclick="copySub('/sub', 'MIX База')">
+                    <!-- MIX -->
+                    <div class="sub-card mix" onclick="copySub('/sub', 'Master Spark (MIX)')">
                         <div class="sub-header">
-                            <div class="sub-title"><i class="fa-solid fa-infinity" style="color: var(--text-main);"></i> MIX База</div>
-                            <div class="sub-badge badge-mix">Full Access</div>
+                            <div class="sub-title"><i class="fa-solid fa-infinity" style="color: #fda4af;"></i> MIX База</div>
+                            <div class="sub-badge badge-mix">Master Spark</div>
                         </div>
-                        <div class="sub-desc">Полный список всех живых серверов (БС + ЧС). Подойдет, если ваш клиент умеет сам тестировать пинг.</div>
-                        <div class="sub-tech">PROTO: ALL SUPPORTED</div>
+                        <div class="sub-desc">Полный нефильтрованный гримуар всех живых узлов. Подойдет опытным пользователям с клиентом Throne / v2rayN.</div>
+                        <div class="sub-tech">SPELLCARD: ALL PROTOCOLS</div>
                     </div>
                 </div>
             </div>
