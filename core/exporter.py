@@ -201,20 +201,22 @@ class Exporter:
             except Exception as e:
                 logger.error(f"Ошибка сохранения {filename}: {e}")
 
-        template_path = CONFIG.app.get("template_path", "config/template.html")
-        if not os.path.exists(template_path): 
-            return
-
         try:
-            with open(template_path, "r", encoding="utf-8") as f:
+            with open("config/web/template.html", "r", encoding="utf-8") as f:
                 tpl = f.read()
+            with open("config/web/style.css", "r", encoding="utf-8") as f:
+                css = f.read()
+            with open("config/web/main.js", "r", encoding="utf-8") as f:
+                js = f.read()
 
             top_speed = max((n.speed for n in nodes), default=0.0)
             now = datetime.datetime.utcnow() + datetime.timedelta(hours=3)
             public_url = CONFIG.app.get("public_url", "")
 
             html_out = (
-                tpl.replace("{{UPDATE_TIME}}", now.strftime("%d.%m %H:%M"))
+                tpl.replace("{{INJECT_CSS}}", css)
+                   .replace("{{INJECT_JS}}", js)
+                   .replace("{{UPDATE_TIME}}", now.strftime("%d.%m %H:%M"))
                    .replace("{{PROXY_COUNT}}", str(len(nodes)))
                    .replace("{{MAX_SPEED}}", str(int(top_speed)))
                    .replace("{{SUB_LINK}}", f"{public_url}/sub")
@@ -222,7 +224,7 @@ class Exporter:
             with open("index.html", "w", encoding="utf-8") as f:
                 f.write(html_out)
         except Exception as e:
-            logger.error(f"HTML generation error: {e}")
+            logger.error(f"HTML build error: {e}")
 
     @staticmethod
     async def send_telegram_report(total_parsed: int, alive_nodes: List[ProxyNode], duration: float, dead_sources: List[str]):
