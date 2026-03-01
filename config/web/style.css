@@ -60,6 +60,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.5px; }
     100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.2); } 
 }
 
+/* Magic Touhou Animation for Network Text */
+@keyframes touhou-magic {
+    0%, 100% { text-shadow: 0 0 15px rgba(225, 29, 72, 0.4), 0 0 30px rgba(225, 29, 72, 0.2); transform: translateY(0); }
+    50% { text-shadow: 0 0 25px rgba(225, 29, 72, 0.8), 0 0 50px rgba(139, 92, 246, 0.4); transform: translateY(-3px); }
+}
+
 /* --- SIDE NAVIGATION --- */
 .side-nav {
     position: fixed; right: 30px; top: 50%; transform: translateY(-50%);
@@ -67,7 +73,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.5px; }
 }
 .nav-btn {
     display: flex; align-items: center; justify-content: flex-end; gap: 15px;
-    background: none; border: none; cursor: pointer; group; opacity: 0.4; transition: var(--trans);
+    background: none; border: none; cursor: pointer; opacity: 0.4; transition: var(--trans);
 }
 .nav-btn:hover, .nav-btn.active { opacity: 1; }
 .nav-label {
@@ -86,7 +92,15 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.5px; }
 @media (max-width: 1024px) { .side-nav { display: none; } }
 
 /* --- SECTIONS & CARDS --- */
-section { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; padding: 60px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+section { 
+    min-height: 80vh; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    padding: 60px 0; 
+    border-bottom: 1px solid rgba(255,255,255,0.02); 
+    scroll-margin-top: 40px;
+}
 section:last-of-type { border-bottom: none; }
 
 .glass-card { 
@@ -107,8 +121,12 @@ section:last-of-type { border-bottom: none; }
 }
 .status-badge .dot { width: 8px; height: 8px; background: var(--touhou-purple); border-radius: 50%; animation: pulse-glow 2s infinite; }
 
-.hero h1 { font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 20px; line-height: 1; letter-spacing: -3px; text-transform: uppercase; font-style: italic;}
-.hero h1 span { color: var(--touhou-red); display: inline-block; }
+.hero h1 { font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 20px; line-height: 1.1; letter-spacing: -3px; text-transform: uppercase; font-style: italic;}
+.hero h1 span { 
+    color: var(--touhou-red); 
+    display: inline-block; 
+    animation: touhou-magic 4s ease-in-out infinite; 
+}
 .hero p { color: var(--text-dim); font-size: clamp(1rem, 3vw, 1.2rem); max-width: 800px; margin: 0 auto 40px auto; line-height: 1.8; text-align: center; }
 
 /* --- BUTTONS --- */
@@ -168,7 +186,7 @@ section:last-of-type { border-bottom: none; }
 .app-card {
     background: rgba(0,0,0,0.3); border: 1px solid var(--border);
     border-radius: 16px; padding: 20px 10px; cursor: pointer;
-    display: flex; flex-direction: column; align-items: center; gap: 12px; transition: var(--trans);
+    display: flex; flex-direction: column; align-items: center; gap: 12px; transition: var(--trans); text-align: center;
 }
 .app-card:hover { background: rgba(255,255,255,0.02); transform: translateY(-3px); border-color: rgba(255,255,255,0.1); }
 .app-card.selected { border-color: var(--touhou-purple); background: rgba(139, 92, 246, 0.1); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.1); }
@@ -297,12 +315,38 @@ section:last-of-type { border-bottom: none; }
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-/* --- FOOTER & DISCLAIMER --- */
+/* --- STRICT LEGAL DISCLAIMER --- */
 .disclaimer-block {
-    margin-top: 60px; padding: 30px; border: 1px solid rgba(225, 29, 72, 0.2); border-radius: 24px;
-    background: rgba(225, 29, 72, 0.03); font-size: 0.9rem; color: var(--text-dim); text-align: justify; line-height: 1.7;
+    background: #000;
+    border: 1px solid #333;
+    padding: 30px;
+    border-radius: 12px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 0.85rem;
+    color: #888;
+    line-height: 1.6;
+    text-align: left;
 }
-.disclaimer-block b { color: var(--touhou-red); font-size: 1.1rem; display: block; margin-bottom: 16px; text-align: center; letter-spacing: 1px;}
+.disclaimer-block h4 {
+    color: #fff;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 800;
+}
+.disclaimer-block p {
+    margin-bottom: 12px;
+}
+.disclaimer-block p:last-child {
+    margin-bottom: 0;
+}
+.disclaimer-block b {
+    color: #ccc;
+    font-weight: 700;
+}
+
 .footer { text-align: center; color: var(--text-dark); font-size: 0.9rem; padding: 40px 0; font-weight: 700; }
 .footer a { color: var(--text-dim); text-decoration: none; transition: 0.3s; border-bottom: 1px solid var(--border); padding-bottom: 2px;}
 .footer a:hover { color: var(--touhou-sakura); border-color: var(--touhou-sakura); }
