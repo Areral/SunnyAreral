@@ -190,7 +190,7 @@ class Exporter:
 
     @staticmethod
     def generate_subscription(nodes: List[ProxyNode], title: str) -> str:
-        channel_tag = CONFIG.app.get("channel_tag", "@ScDevNetwork")
+        channel_tag = CONFIG.app.get("channel_tag", "@ScarletDevilNet")
         lines =[f"#profile-title: {title}", "#profile-update-interval: 6"]
         for node in sorted(nodes, key=lambda x: x.speed, reverse=True):
             flag = Exporter._flag(node.country)
@@ -202,7 +202,7 @@ class Exporter:
         return "\n".join(lines)
 
     @staticmethod
-    def save_files(nodes: List[ProxyNode], shard_index: int = -1, parsed_count: int = 0, dead_sources: List[str] = None):
+    def save_files(nodes: List[ProxyNode], shard_index: int = -1, parsed_count: int = 0, dead_sources: List[str] = None, duration: float = 0.0, l4_dropped: int = 0):
         if not nodes:
             logger.warning("⚠ Пустой список нод — файлы подписок будут пустыми")
             nodes_bs = []
@@ -231,6 +231,8 @@ class Exporter:
             "parsed": parsed_count,
             "alive": len(nodes),
             "top_speed": top_speed,
+            "duration": duration,
+            "l4_dropped": l4_dropped,
             "dead_sources": dead_sources or []
         }
         
