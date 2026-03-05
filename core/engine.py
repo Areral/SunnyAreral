@@ -532,7 +532,7 @@ class BatchEngine:
             if proc and proc.returncode is None:
                 try:
                     proc.kill()
-                    await asyncio.wait_for(proc.wait(), timeout=2.0)
+                    await asyncio.wait_for(proc.wait(), timeout=3.0)
                 except Exception:
                     try:
                         os.kill(proc.pid, signal.SIGKILL)
@@ -547,6 +547,7 @@ class Inspector:
     def __init__(self):
         self.batch_engine = BatchEngine()
         self.batch_semaphore = asyncio.Semaphore(4)
+        self.l4_dropped = 0
 
     async def _l4_check(self, node: ProxyNode, sem: asyncio.Semaphore) -> Optional[ProxyNode]:
         if node.protocol == "hysteria2" or node.config.type == "quic":
@@ -607,6 +608,8 @@ class Inspector:
             
         nodes = valid_nodes
         total = len(nodes)
+        self.l4_dropped += (total_initial - total)
+        
         logger.info(f"✔ Фаза 0 завершена. Отброшено {total_initial - total} мертвых IP. В работу идет: {total} узлов.")
 
         if not nodes:
