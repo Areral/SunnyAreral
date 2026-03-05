@@ -120,20 +120,15 @@ class LinkParser:
                 
         conf.sni = actual_sni
 
-        if conf.security in ("tls", "reality"):
+        if conf.security == "reality":
             if not conf.fp or conf.fp.lower() not in VALID_FINGERPRINTS:
                 conf.fp = "chrome"
             else:
                 conf.fp = conf.fp.lower()
-        else:
+        
+        elif conf.security == "tls":
             if conf.fp and conf.fp.lower() not in VALID_FINGERPRINTS:
                 conf.fp = None
-
-        if conf.security == "reality":
-            if not conf.alpn or conf.alpn.lower() in ("none", "null", ""):
-                conf.alpn = "h2,http/1.1"
-        elif conf.alpn and conf.alpn.lower() in ("none", "null", ""):
-            conf.alpn = None
 
         if conf.security == "reality":
             if not conf.sid or conf.sid.lower() in ("none", "null", ""):
@@ -147,11 +142,6 @@ class LinkParser:
                 if len(decoded) != 32: return None
             except Exception:
                 return None
-
-            if conf.type == "tcp" and (not conf.flow or conf.flow.lower() in ("none", "null", "")):
-                conf.flow = "xtls-rprx-vision"
-            elif conf.type != "tcp":
-                conf.flow = None
 
         if conf.type == "grpc":
             if not conf.service_name and conf.path:
