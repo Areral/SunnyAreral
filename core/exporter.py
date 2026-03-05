@@ -1,12 +1,10 @@
 import urllib.parse
 import os
-import datetime
-import base64
 import json
 import hashlib
 import ipaddress
+import base64
 from typing import List, Dict, Any, Optional
-import aiohttp
 from loguru import logger
 
 from core.models import ProxyNode
@@ -45,14 +43,6 @@ class Exporter:
             return f"[{clean}]" if ip.version == 6 else clean
         except ValueError:
             return clean
-
-    @staticmethod
-    def _resolve_export_sni(c, is_ip_server: bool) -> Optional[str]:
-        if c.sni: return c.sni
-        if c.type not in ("ws", "httpupgrade", "xhttp", "http", "h2"):
-            if c.host: return c.host
-        if not is_ip_server: return c.server
-        return None
 
     @staticmethod
     def _xray_encode_value(key: str, value: str) -> str:
@@ -206,9 +196,9 @@ class Exporter:
         if not nodes:
             logger.warning("⚠ Пустой список нод — файлы подписок будут пустыми")
             nodes_bs = []
-            nodes_chs = []
+            nodes_chs =[]
         else:
-            nodes_bs =[n for n in nodes if n.is_bs]
+            nodes_bs = [n for n in nodes if n.is_bs]
             nodes_chs =[n for n in nodes if not n.is_bs]
             
         suffix = f"_{shard_index}" if shard_index >= 0 else ""
@@ -238,6 +228,7 @@ class Exporter:
         
         try:
             with open(f"data/stats{suffix}.json", "w", encoding="utf-8") as f:
-                json.dump(stats, f)
+                json.dump(stats, f, ensure_ascii=False, indent=4)
+            logger.info(f"💾 Статистика и подписки для шарда {shard_index} сохранены.")
         except Exception as e:
             logger.error(f"Ошибка сохранения stats: {e}")
