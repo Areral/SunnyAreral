@@ -120,15 +120,14 @@ class LinkParser:
                 
         conf.sni = actual_sni
 
-        if conf.security == "reality":
+        if conf.security in ("tls", "reality"):
             if not conf.fp or conf.fp.lower() not in VALID_FINGERPRINTS:
                 conf.fp = "chrome"
             else:
                 conf.fp = conf.fp.lower()
-        
-        elif conf.security == "tls":
-            if conf.fp and conf.fp.lower() not in VALID_FINGERPRINTS:
-                conf.fp = None
+
+            if not conf.alpn or conf.alpn.lower() in ("none", "null", ""):
+                conf.alpn = "h2,http/1.1"
 
         if conf.security == "reality":
             if not conf.sid or conf.sid.lower() in ("none", "null", ""):
