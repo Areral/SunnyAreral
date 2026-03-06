@@ -137,20 +137,20 @@ class LinkParser:
             actual_sni = actual_sni.strip("[]")
             try:
                 ipaddress.ip_address(actual_sni)
-                actual_sni = None
+                actual_sni = None 
             except ValueError:
                 pass
                 
         conf.sni = actual_sni
 
-        if conf.fp:
-            if conf.fp.lower() not in VALID_FINGERPRINTS:
-                conf.fp = "chrome" if conf.security in ("tls", "reality") else None
-            else:
-                conf.fp = conf.fp.lower()
-        else:
-            if conf.security == "reality":
+        if conf.security in ("tls", "reality"):
+            conf.raw_meta["allowInsecure"] = "1"
+            conf.raw_meta["insecure"] = "1"
+            
+            if not conf.fp or conf.fp.lower() not in VALID_FINGERPRINTS:
                 conf.fp = "chrome"
+            if not conf.alpn or conf.alpn.lower() in ("none", "null", ""):
+                conf.alpn = "h2,http/1.1"
 
         if conf.security == "reality":
             if not conf.sid or conf.sid.lower() in ("none", "null", ""):
@@ -164,6 +164,10 @@ class LinkParser:
                 if len(decoded) != 32: return None
             except Exception:
                 return None
+                
+            if conf.type == "tcp" and protocol == "vless":
+                if not conf.flow or conf.flow.lower() in ("none", "null", ""):
+                    conf.flow = "xtls-rprx-vision"
 
         if conf.type == "grpc":
             if not conf.service_name and conf.path:
@@ -263,7 +267,7 @@ class LinkParser:
         try:
             line = html.unescape(line).replace("/?", "?")
             u = urllib.parse.urlparse(line)
-            q = urllib.parse.parse_qs(u.query, keep_blank_values=True)
+            q = urllib.parse.parseqs(u.query, keep_blank_values=True)
             q_simple = {k: urllib.parse.unquote(v[0]) for k, v in q.items() if v}
 
             host = u.hostname
