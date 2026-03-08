@@ -50,8 +50,14 @@ class AppSettings(BaseSettings):
     })
     
     whitelist: dict = Field(default_factory=lambda: {
-        "domains_url": "https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/source/config/whitelist-all.txt",
-        "ips_url": "https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/source/config/cidrwhitelist.txt",
+        "domains_urls":[
+            "https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/source/config/whitelist-all.txt",
+            "https://raw.githubusercontent.com/hxehex/russia-mobile-internet-whitelist/refs/heads/main/whitelist.txt"
+        ],
+        "ips_urls":[
+            "https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/source/config/cidrwhitelist.txt",
+            "https://raw.githubusercontent.com/hxehex/russia-mobile-internet-whitelist/refs/heads/main/cidrwhitelist.txt"
+        ],
     })
 
     BATCH_SIZE: int = 200
