@@ -30,31 +30,59 @@ class RKNValidator:
         cls.networks_wl.clear()
         cls._is_loaded = False
         
-        dom_url = CONFIG.whitelist.get("domains_url", "")
-        ip_url = CONFIG.whitelist.get("ips_url", "")
+        dom_urls = CONFIG.whitelist.get("domains_urls",[])
+        if not dom_urls and CONFIG.whitelist.get("domains_url"):
+            dom_urls = [CONFIG.whitelist.get("domains_url")]
+            
+        ip_urls = CONFIG.whitelist.get("ips_urls",[])
+        if not ip_urls and CONFIG.whitelist.get("ips_url"):
+            ip_urls =[CONFIG.whitelist.get("ips_url")]
         
         timeout = aiohttp.ClientTimeout(total=30)
         async with aiohttp.ClientSession(timeout=timeout) as session:
-            dom_text, ip_text = await asyncio.gather(
-                cls._fetch_list(session, dom_url),
-                cls._fetch_list(session, ip_url)
-            )
+            tasks =[]
+            for url in dom_urls: tasks.append(cls._fetch_list(session, url))
+            for url in ip_urls: tasks.append(cls._fetch_list(session, url))
+            
+            results = await asyncio.gather(*tasks)
+            
+        dom_results = results[:len(dom_urls)]
+        ip_results = results[len(dom_urls):]
 
-        if dom_text:
-            cls.domains_wl = {line.strip().lower() for line in dom_text.splitlines() if line.strip() and not line.startswith('#')}
-            logger.info(f"⛨ Загружено {len(cls.domains_wl)} доменов БС.")
+        for text in dom_results:
+            if text:
+                cls.domains_wl.update({
+                    line.strip().lower() 
+                    for line in text.splitlines() 
+                    if line.strip() and not line.startswith('#')
+                })
+                
+        if cls.domains_wl:
+            logger.info(f"⛨ Загружено {len(cls.domains_wl)} уникальных доменов БС.")
 
-        if ip_text:
-            raw_lines = {line.strip() for line in ip_text.splitlines() if line.strip() and not line.startswith('#')}
-            for item in raw_lines:
-                if '/' in item:
-                    try:
-                        cls.networks_wl.append(ipaddress.ip_network(item, strict=False))
-                    except ValueError:
-                        pass
-                else:
-                    cls.ips_wl.add(item)
-            logger.info(f"⛨ Загружено {len(cls.ips_wl)} IP-адресов и {len(cls.networks_wl)} подсетей БС.")
+        all_ip_lines = set()
+        for text in ip_results:
+            if text:
+                all_ip_lines.update({
+                    line.strip().lower() 
+                    for line in text.splitlines() 
+                    if line.strip() and not line.startswith('#')
+                })
+                
+        unique_nets = set()
+        for item in all_ip_lines:
+            if '/' in item:
+                try:
+                    unique_nets.add(ipaddress.ip_network(item, strict=False))
+                except ValueError:
+                    pass
+            else:
+                cls.ips_wl.add(item)
+                
+        cls.networks_wl = list(unique_nets)
+
+        if cls.ips_wl or cls.networks_wl:
+            logger.info(f"⛨ Загружено {len(cls.ips_wl)} IP-адресов и {len(cls.networks_wl)} уникальных подсетей БС.")
 
         if cls.domains_wl or cls.ips_wl or cls.networks_wl:
             cls._is_loaded = True
