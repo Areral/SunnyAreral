@@ -32,11 +32,11 @@ class RKNValidator:
         
         dom_urls = CONFIG.whitelist.get("domains_urls",[])
         if not dom_urls and CONFIG.whitelist.get("domains_url"):
-            dom_urls = [CONFIG.whitelist.get("domains_url")]
+            dom_urls =[CONFIG.whitelist.get("domains_url")]
             
         ip_urls = CONFIG.whitelist.get("ips_urls",[])
         if not ip_urls and CONFIG.whitelist.get("ips_url"):
-            ip_urls =[CONFIG.whitelist.get("ips_url")]
+            ip_urls = [CONFIG.whitelist.get("ips_url")]
         
         timeout = aiohttp.ClientTimeout(total=30)
         async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -101,23 +101,22 @@ class RKNValidator:
         if not target: 
             return False
             
-        target = target.lower()
+        target = target.lower().strip("[]")
         
         if target in cls.domains_wl or target in cls.ips_wl:
             return True
             
-        parts = target.split('.')
-        for i in range(len(parts) - 1):
-            base_domain = '.'.join(parts[i:])
-            if base_domain in cls.domains_wl:
-                return True
-
         try:
             ip_obj = ipaddress.ip_address(target)
             for net in cls.networks_wl:
                 if ip_obj in net:
                     return True
+            return False
         except ValueError:
-            pass
-            
-        return False
+            parts = target.split('.')
+            for i in range(1, len(parts) - 1):
+                base_domain = '.'.join(parts[i:])
+                if base_domain in cls.domains_wl:
+                    return True
+                        
+            return False
