@@ -40,7 +40,7 @@ class BatchEngine:
     def __init__(self):
         self.ping_semaphore = asyncio.Semaphore(100)
         self.speed_semaphore = asyncio.Semaphore(6) 
-        logger.info("⚙ Engine готов. Smart CDN-Filter + OOM Protection.")
+        logger.info("⚙ Engine готов. IPv6-Ready + Payload Armor + OOM Protection.")
 
     @classmethod
     def _ensure_lock(cls):
@@ -98,8 +98,8 @@ class BatchEngine:
 
     @staticmethod
     def _generate_batch_config(nodes: List[ProxyNode], base_port: int) -> dict:
-        inbounds =[]
-        outbounds = []
+        inbounds = []
+        outbounds =[]
         
         rules =[
             {"protocol": "dns", "outbound": "direct"},
@@ -134,7 +134,10 @@ class BatchEngine:
         return {
             "log": {"level": "fatal", "output": "discard"},
             "dns": {
-                "servers":[{"tag": "remote-doh", "address": "https://1.1.1.1/dns-query", "detour": "direct"}],
+                "servers":[
+                    {"tag": "remote-doh", "address": "https://1.1.1.1/dns-query", "detour": "direct"},
+                    {"tag": "fallback-doh", "address": "https://dns.quad9.net/dns-query", "detour": "direct"}
+                ],
                 "independent_cache": True,
             },
             "inbounds": inbounds,
@@ -329,7 +332,8 @@ class BatchEngine:
                         try:
                             ping_timeout = aiohttp.ClientTimeout(total=8.0, connect=4.0)
                             async with session.get(target_url, allow_redirects=False, timeout=ping_timeout, ssl=False) as resp:
-                                body = await resp.read()
+                                
+                                body = await resp.content.read(4096) 
                                 
                                 if "generate_204" in target_url:
                                     if resp.status != 204 or len(body) > 0:
@@ -502,7 +506,7 @@ class BatchEngine:
                     logger.error(f"sing-box упал при старте: {stderr_out.decode(errors='replace')}")
                 except Exception:
                     pass
-                return []
+                return[]
 
             first_port = config_data["inbounds"][0]["listen_port"]
             if not await self._wait_for_port("127.0.0.1", first_port, timeout=5.0):
@@ -600,10 +604,18 @@ class Inspector:
             
             try:
                 addr_info = await asyncio.wait_for(
-                    loop.getaddrinfo(host, port, family=socket.AF_INET, type=socket.SOCK_STREAM),
+                    loop.getaddrinfo(host, port, family=socket.AF_UNSPEC, type=socket.SOCK_STREAM),
                     timeout=2.0
                 )
-                ip_str = addr_info[0][4][0]
+                
+                ip_str = None
+                for info in addr_info:
+                    if info[0] == socket.AF_INET:
+                        ip_str = info[4][0]
+                        break
+                if not ip_str:
+                    ip_str = addr_info[0][4][0]
+                    
                 ip_obj = ipaddress.ip_address(ip_str)
             except Exception:
                 return None 
@@ -611,7 +623,7 @@ class Inspector:
             if ip_obj.is_loopback or ip_obj.is_private:
                 return None
                     
-            is_cdn_allowed = node.config.type in ("ws", "websocket", "httpupgrade", "xhttp")
+            is_cdn_allowed = node.config.type in ("ws", "websocket", "httpupgrade", "xhttp", "grpc")
             
             if not is_cdn_allowed:
                 forbidden_networks =[
@@ -663,7 +675,7 @@ class Inspector:
         logger.info(f"✔ Фаза 0 завершена. Отброшено {total_initial - total} мертвых IP. В работу идет: {total} узлов.")
 
         if not nodes:
-            return []
+            return[]
 
         alive_total: List[ProxyNode] =[]
         batch_size = min(getattr(CONFIG, "BATCH_SIZE", 100), 100)
